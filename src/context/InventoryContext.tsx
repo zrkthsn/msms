@@ -6,7 +6,8 @@ import type {
   InventoryItem, 
   ActivityLog, 
   StoreLocation, 
-  NavigationTab 
+  NavigationTab,
+  MotorcycleCategoryFilter
 } from '../types/inventory';
 import { 
   INITIAL_MOTORCYCLES, 
@@ -63,6 +64,10 @@ interface InventoryContextType {
   adjustStockItem: InventoryItem | null;
   setAdjustStockItem: (item: InventoryItem | null) => void;
 
+  // Motorcycle Category Filter ('All' | 'Tax' | 'Tax-Free' | 'Old / Used' | 'Brand New')
+  motorcycleCategoryFilter: MotorcycleCategoryFilter;
+  setMotorcycleCategoryFilter: (filter: MotorcycleCategoryFilter) => void;
+
   // Low stock items
   lowStockItems: { item: InventoryItem; currentStock: number; threshold: number; name: string; code: string }[];
 
@@ -92,6 +97,7 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>(INITIAL_ACTIVITY_LOGS);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [motorcycleCategoryFilter, setMotorcycleCategoryFilter] = useState<MotorcycleCategoryFilter>('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [defaultAddModalTab, setDefaultAddModalTab] = useState<'motorcycle' | 'helmet' | 'part'>('motorcycle');
   
@@ -372,6 +378,8 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       deleteItem,
       searchQuery,
       setSearchQuery,
+      motorcycleCategoryFilter,
+      setMotorcycleCategoryFilter,
       isAddModalOpen,
       setIsAddModalOpen,
       defaultAddModalTab,

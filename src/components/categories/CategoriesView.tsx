@@ -1,5 +1,6 @@
 import React from 'react';
 import { useInventory } from '../../context/InventoryContext';
+import type { MotorcycleCategoryFilter } from '../../types/inventory';
 import { 
   Bike, 
   HardHat, 
@@ -9,13 +10,41 @@ import {
 } from 'lucide-react';
 
 export const CategoriesView: React.FC = () => {
-  const { motorcycles, helmets, parts, setActiveTab, setSearchQuery } = useInventory();
+  const { 
+    motorcycles, 
+    helmets, 
+    parts, 
+    setActiveTab, 
+    setSearchQuery,
+    setMotorcycleCategoryFilter 
+  } = useInventory();
 
-  const motoCategories = [
-    { name: 'Sport / Superbike', count: motorcycles.filter(m => m.category === 'Sport').length, search: 'Sport' },
-    { name: 'Hypernaked', count: motorcycles.filter(m => m.category === 'Naked').length, search: 'Naked' },
-    { name: 'Adventure / Enduro', count: motorcycles.filter(m => m.category === 'Adventure').length, search: 'Adventure' },
-    { name: 'Cruiser / Custom', count: motorcycles.filter(m => m.category === 'Cruiser').length, search: 'Cruiser' },
+  // The 4 user-requested Motorcycle categories
+  const motoCategories: { name: string; filter: MotorcycleCategoryFilter; count: number; badge: string }[] = [
+    { 
+      name: 'Tax Bikes', 
+      filter: 'Tax', 
+      count: motorcycles.filter(m => m.taxCategory === 'Tax').length,
+      badge: 'Taxable'
+    },
+    { 
+      name: 'Tax-Free Bikes', 
+      filter: 'Tax-Free', 
+      count: motorcycles.filter(m => m.taxCategory === 'Tax-Free').length,
+      badge: 'Tax-Free'
+    },
+    { 
+      name: 'Brand New Bikes', 
+      filter: 'Brand New', 
+      count: motorcycles.filter(m => m.condition === 'Brand New').length,
+      badge: '0 Miles'
+    },
+    { 
+      name: 'Old / Used Bikes', 
+      filter: 'Old / Used', 
+      count: motorcycles.filter(m => m.condition === 'Old / Used').length,
+      badge: 'Pre-Owned'
+    },
   ];
 
   const gearCategories = [
@@ -32,7 +61,12 @@ export const CategoriesView: React.FC = () => {
     { name: 'Electrical & Batteries', count: parts.filter(p => p.category === 'Electrical').length, search: 'Electrical' },
   ];
 
-  const handleSelectCategory = (tab: 'motorcycles' | 'helmets' | 'parts', searchKeyword: string) => {
+  const handleSelectMotoCategory = (filter: MotorcycleCategoryFilter) => {
+    setMotorcycleCategoryFilter(filter);
+    setActiveTab('motorcycles');
+  };
+
+  const handleSelectGearOrPartCategory = (tab: 'helmets' | 'parts', searchKeyword: string) => {
     setActiveTab(tab);
     setSearchQuery(searchKeyword);
   };
@@ -45,7 +79,7 @@ export const CategoriesView: React.FC = () => {
           <h2 className="font-showroom text-3xl font-black italic tracking-wide text-gray-900">
             INVENTORY CATEGORIES
           </h2>
-          <p className="text-xs text-gray-500 font-mono">Organized showroom fleet, apparel divisions, and spare parts catalog</p>
+          <p className="text-xs text-gray-500 font-mono">Organized showroom fleet (Tax, Tax-Free, Brand New, Old/Used), apparel divisions, and spare parts catalog</p>
         </div>
         <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
           <Layers className="w-5 h-5" />
@@ -62,7 +96,7 @@ export const CategoriesView: React.FC = () => {
                 <Bike className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900 uppercase">Motorcycle Fleet</h3>
+                <h3 className="text-sm font-bold text-gray-900 uppercase">Motorcycle Categories</h3>
                 <span className="text-xs text-orange-600 font-mono font-bold">{motorcycles.length} units listed</span>
               </div>
             </div>
@@ -71,12 +105,17 @@ export const CategoriesView: React.FC = () => {
               {motoCategories.map((cat, idx) => (
                 <div
                   key={idx}
-                  onClick={() => handleSelectCategory('motorcycles', cat.search)}
+                  onClick={() => handleSelectMotoCategory(cat.filter)}
                   className="p-3 rounded-lg bg-gray-50 hover:bg-orange-50/50 border border-gray-200 cursor-pointer flex items-center justify-between group transition-all"
                 >
-                  <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">
-                    {cat.name}
-                  </span>
+                  <div>
+                    <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">
+                      {cat.name}
+                    </span>
+                    <span className="ml-2 text-[10px] font-mono text-gray-400">
+                      ({cat.badge})
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-white text-gray-700 border border-gray-200">
                       {cat.count} units
@@ -89,10 +128,13 @@ export const CategoriesView: React.FC = () => {
           </div>
 
           <button
-            onClick={() => setActiveTab('motorcycles')}
+            onClick={() => {
+              setMotorcycleCategoryFilter('All');
+              setActiveTab('motorcycles');
+            }}
             className="mt-5 w-full py-2.5 rounded-lg bg-white hover:bg-gray-50 text-xs font-bold uppercase text-gray-900 border border-gray-300 transition-colors shadow-xs"
           >
-            Explore Showroom
+            Explore All Motorcycles
           </button>
         </div>
 
@@ -115,7 +157,7 @@ export const CategoriesView: React.FC = () => {
               {gearCategories.map((cat, idx) => (
                 <div
                   key={idx}
-                  onClick={() => handleSelectCategory('helmets', cat.search)}
+                  onClick={() => handleSelectGearOrPartCategory('helmets', cat.search)}
                   className="p-3 rounded-lg bg-gray-50 hover:bg-orange-50/50 border border-gray-200 cursor-pointer flex items-center justify-between group transition-all"
                 >
                   <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">
@@ -159,7 +201,7 @@ export const CategoriesView: React.FC = () => {
               {partCategories.map((cat, idx) => (
                 <div
                   key={idx}
-                  onClick={() => handleSelectCategory('parts', cat.search)}
+                  onClick={() => handleSelectGearOrPartCategory('parts', cat.search)}
                   className="p-3 rounded-lg bg-gray-50 hover:bg-orange-50/50 border border-gray-200 cursor-pointer flex items-center justify-between group transition-all"
                 >
                   <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">

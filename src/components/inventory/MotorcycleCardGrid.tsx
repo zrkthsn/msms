@@ -38,10 +38,25 @@ export const MotorcycleCardGrid: React.FC<MotorcycleCardGridProps> = ({ items })
           >
             {/* Clean Placeholder Box (No photos loaded) */}
             <div className="relative h-36 w-full bg-gray-50/80 border border-gray-100 rounded-lg flex flex-col items-center justify-center p-3 overflow-hidden group-hover:border-orange-200 group-hover:bg-orange-50/20 transition-all">
-              <Bike className="w-10 h-10 text-gray-300 group-hover:text-orange-500 transition-colors stroke-[1.25]" />
-              <span className="text-[9px] font-mono font-bold text-gray-400 mt-1.5 uppercase tracking-widest group-hover:text-orange-600 transition-colors">
-                {moto.category}
-              </span>
+              <Bike className="w-9 h-9 text-gray-300 group-hover:text-orange-500 transition-colors stroke-[1.25]" />
+              
+              {/* 4-Category Badges: Tax/Tax-Free & Brand New/Old/Used */}
+              <div className="flex items-center gap-1 mt-2">
+                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${
+                  moto.taxCategory === 'Tax'
+                    ? 'bg-amber-50 text-amber-800 border-amber-300'
+                    : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                }`}>
+                  {moto.taxCategory}
+                </span>
+                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${
+                  moto.condition === 'Brand New'
+                    ? 'bg-orange-50 text-orange-700 border-orange-200'
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                }`}>
+                  {moto.condition}
+                </span>
+              </div>
 
               {/* Status Pill if Sold or Reserved */}
               {moto.status !== 'In Stock' && (

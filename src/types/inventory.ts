@@ -1,7 +1,10 @@
 export type ItemType = 'motorcycle' | 'helmet' | 'part';
 
-export type MotorcycleCondition = 'New' | 'Used';
+export type MotorcycleCondition = 'Brand New' | 'Old / Used';
+export type MotorcycleTaxCategory = 'Tax' | 'Tax-Free';
 export type MotorcycleStatus = 'In Stock' | 'Reserved' | 'Sold';
+
+export type MotorcycleCategoryFilter = 'All' | 'Tax' | 'Tax-Free' | 'Old / Used' | 'Brand New';
 
 export interface MotorcycleItem {
   id: string;
@@ -11,13 +14,13 @@ export interface MotorcycleItem {
   model: string;
   year: number;
   condition: MotorcycleCondition;
+  taxCategory: MotorcycleTaxCategory;
   engineCc: number;
   color: string;
   mileage: number;
   costPrice: number;
   sellingPrice: number;
   status: MotorcycleStatus;
-  imageUrl?: string;
   location: string;
   category: 'Sport' | 'Adventure' | 'Cruiser' | 'Naked' | 'Touring';
   createdAt: string;
@@ -40,7 +43,6 @@ export interface HelmetGearItem {
   price: number;
   color: string;
   gearType: 'Full Face Helmet' | 'Modular Helmet' | 'Riding Jacket' | 'Racing Suit' | 'Gloves' | 'Boots';
-  imageUrl?: string;
   location: string;
   createdAt: string;
 }
@@ -60,7 +62,6 @@ export interface SparePartItem {
   reorderPoint: number;
   unitCost: number;
   unitPrice: number;
-  imageUrl?: string;
   location: string;
   createdAt: string;
 }

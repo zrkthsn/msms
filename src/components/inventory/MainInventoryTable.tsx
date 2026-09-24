@@ -39,6 +39,8 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
     parts, 
     searchQuery, 
     setSearchQuery,
+    motorcycleCategoryFilter,
+    setMotorcycleCategoryFilter,
     setInspectItem,
     setAdjustStockItem,
     deleteItem,
@@ -51,9 +53,6 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
   
   // Status sub-tab: 'available' | 'sold' | 'all'
   const [availabilityTab, setAvailabilityTab] = useState<'available' | 'sold' | 'all'>('available');
-
-  // Condition filter: 'All' | 'New' | 'Used'
-  const [conditionFilter, setConditionFilter] = useState<'All' | 'New' | 'Used'>('All');
   
   // View mode: 'grid' (default matching screenshot) | 'table'
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -144,7 +143,9 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
             item.model.toLowerCase().includes(q) ||
             item.vin.toLowerCase().includes(q) ||
             item.color.toLowerCase().includes(q) ||
-            item.category.toLowerCase().includes(q)
+            item.category.toLowerCase().includes(q) ||
+            item.taxCategory.toLowerCase().includes(q) ||
+            item.condition.toLowerCase().includes(q)
           );
         } else if (item.type === 'helmet') {
           return (
@@ -164,12 +165,14 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
       });
     }
 
-    // Condition filter
-    if (conditionFilter !== 'All') {
+    // 4 Motorcycle Categories Filter: Tax, Tax-Free, Old / Used, Brand New
+    if (activeTab === 'motorcycles' && motorcycleCategoryFilter !== 'All') {
       list = list.filter(item => {
-        if (item.type === 'motorcycle') {
-          return item.condition === conditionFilter;
-        }
+        if (item.type !== 'motorcycle') return true;
+        if (motorcycleCategoryFilter === 'Tax') return item.taxCategory === 'Tax';
+        if (motorcycleCategoryFilter === 'Tax-Free') return item.taxCategory === 'Tax-Free';
+        if (motorcycleCategoryFilter === 'Old / Used') return item.condition === 'Old / Used';
+        if (motorcycleCategoryFilter === 'Brand New') return item.condition === 'Brand New';
         return true;
       });
     }
@@ -195,7 +198,7 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
     });
 
     return list;
-  }, [allItems, motorcycles, helmets, parts, activeTab, availabilityTab, searchQuery, conditionFilter, sortField, sortAsc]);
+  }, [allItems, motorcycles, helmets, parts, activeTab, availabilityTab, searchQuery, motorcycleCategoryFilter, sortField, sortAsc]);
 
   const toggleSort = (field: 'price' | 'name' | 'stock') => {
     if (sortField === field) {
@@ -290,6 +293,43 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
         </button>
       </div>
 
+      {/* Motorcycle 4 Categories Pills matching user requirement */}
+      {activeTab === 'motorcycles' && (
+        <div className="pt-2 pb-1">
+          <div className="text-[10px] font-mono uppercase font-bold text-gray-400 tracking-wider mb-1.5">
+            Motorcycle Category
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { id: 'All', label: 'All Bikes', count: motorcycles.length },
+              { id: 'Tax', label: 'Tax', count: motorcycles.filter(m => m.taxCategory === 'Tax').length },
+              { id: 'Tax-Free', label: 'Tax-Free', count: motorcycles.filter(m => m.taxCategory === 'Tax-Free').length },
+              { id: 'Brand New', label: 'Brand New', count: motorcycles.filter(m => m.condition === 'Brand New').length },
+              { id: 'Old / Used', label: 'Old / Used', count: motorcycles.filter(m => m.condition === 'Old / Used').length },
+            ].map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setMotorcycleCategoryFilter(cat.id as any)}
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all border ${
+                  motorcycleCategoryFilter === cat.id
+                    ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
+                    : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200'
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-semibold ${
+                  motorcycleCategoryFilter === cat.id
+                    ? 'bg-white/20 text-white'
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {cat.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Sub-Tabs: AVAILABLE vs SOLD matching screenshot */}
       <div className="flex items-center gap-6 pt-1">
         <button
@@ -348,22 +388,8 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
           )}
         </div>
 
-        {/* Right side controls: Condition filter & View Mode switcher */}
+        {/* Right side controls: View Mode switcher */}
         <div className="flex items-center gap-3">
-          {activeTab === 'motorcycles' && (
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-600 font-mono">
-              <span className="text-[10px] text-gray-400 uppercase">Condition:</span>
-              <select
-                value={conditionFilter}
-                onChange={(e) => setConditionFilter(e.target.value as any)}
-                className="bg-transparent text-xs font-bold text-gray-900 focus:outline-none cursor-pointer"
-              >
-                <option value="All">All</option>
-                <option value="New">New</option>
-                <option value="Used">Used</option>
-              </select>
-            </div>
-          )}
 
           {/* Grid vs List View Icons matching screenshot */}
           <div className="flex items-center gap-1 border border-gray-200 rounded-lg p-0.5 bg-white">
@@ -503,15 +529,32 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
 
                         {/* Classification */}
                         <td className="py-3 px-4">
-                          <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase border ${
-                            isMoto 
-                              ? 'bg-orange-50 text-orange-700 border-orange-200' 
-                              : isGear 
-                              ? 'bg-sky-50 text-sky-700 border-sky-200' 
-                              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          }`}>
-                            {typeBadge}
-                          </span>
+                          {isMoto ? (
+                            <div className="flex flex-col gap-1 items-start">
+                              <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded uppercase border ${
+                                item.taxCategory === 'Tax'
+                                  ? 'bg-amber-50 text-amber-800 border-amber-300'
+                                  : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                              }`}>
+                                {item.taxCategory}
+                              </span>
+                              <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded uppercase border ${
+                                item.condition === 'Brand New'
+                                  ? 'bg-orange-50 text-orange-700 border-orange-200'
+                                  : 'bg-gray-100 text-gray-700 border-gray-300'
+                              }`}>
+                                {item.condition}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase border ${
+                              isGear 
+                                ? 'bg-sky-50 text-sky-700 border-sky-200' 
+                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            }`}>
+                              {typeBadge}
+                            </span>
+                          )}
                         </td>
 
                         {/* Identifier */}

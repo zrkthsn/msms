@@ -126,6 +126,18 @@ export const ItemDetailsModal: React.FC = () => {
           {isMoto && (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+                <div className="text-[10px] uppercase font-mono text-gray-400 font-bold">Tax Category</div>
+                <div className="text-xs font-bold text-gray-900 mt-1">
+                  <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded border uppercase ${
+                    inspectItem.taxCategory === 'Tax'
+                      ? 'bg-amber-50 text-amber-800 border-amber-300'
+                      : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                  }`}>
+                    {inspectItem.taxCategory}
+                  </span>
+                </div>
+              </div>
+              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <div className="text-[10px] uppercase font-mono text-gray-400 font-bold">Condition</div>
                 <div className="text-xs font-bold text-gray-900 mt-1">{inspectItem.condition}</div>
               </div>

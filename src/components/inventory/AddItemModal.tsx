@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../../context/InventoryContext';
-import type { HelmetSize, SafetyCert, PartCategory, MotorcycleCondition, MotorcycleStatus } from '../../types/inventory';
+import type { HelmetSize, SafetyCert, PartCategory, MotorcycleCondition, MotorcycleTaxCategory, MotorcycleStatus } from '../../types/inventory';
 import { 
   X, 
   Bike, 
@@ -33,7 +33,8 @@ export const AddItemModal: React.FC = () => {
     brand: 'KAWASAKI',
     model: '',
     year: 2026,
-    condition: 'New' as MotorcycleCondition,
+    condition: 'Brand New' as MotorcycleCondition,
+    taxCategory: 'Tax' as MotorcycleTaxCategory,
     engineCc: 500,
     color: 'Metallic Flat Spark Black',
     mileage: 0,
@@ -244,7 +245,7 @@ export const AddItemModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-mono uppercase text-gray-500 font-bold mb-1">
-                      Condition
+                      Condition *
                     </label>
                     <select
                       value={motoForm.condition}
@@ -253,15 +254,29 @@ export const AddItemModal: React.FC = () => {
                         setMotoForm({ 
                           ...motoForm, 
                           condition: cond,
-                          mileage: cond === 'New' ? 0 : (motoForm.mileage || 1500)
+                          mileage: cond === 'Brand New' ? 0 : (motoForm.mileage || 1500)
                         });
                       }}
                       className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-orange-500"
                     >
-                      <option value="New">New (0 mi)</option>
-                      <option value="Used">Used / Pre-Owned</option>
+                      <option value="Brand New">Brand New (0 mi)</option>
+                      <option value="Old / Used">Old / Used (Pre-Owned)</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono uppercase text-gray-500 font-bold mb-1">
+                    Tax Category *
+                  </label>
+                  <select
+                    value={motoForm.taxCategory}
+                    onChange={(e) => setMotoForm({ ...motoForm, taxCategory: e.target.value as MotorcycleTaxCategory })}
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-orange-500"
+                  >
+                    <option value="Tax">Tax (Taxable Fleet)</option>
+                    <option value="Tax-Free">Tax-Free (Duty-Free / Export)</option>
+                  </select>
                 </div>
 
                 <div>
