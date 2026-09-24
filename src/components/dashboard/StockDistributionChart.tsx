@@ -29,19 +29,19 @@ export const StockDistributionChart: React.FC = () => {
       unit: 'Bikes',
       value: motoValuation,
       percentage: motoPct,
-      color: 'bg-orange-500',
-      textColor: 'text-orange-400',
-      icon: <Flame className="w-4 h-4 text-orange-400" />
+      color: 'bg-orange-600',
+      textColor: 'text-orange-600',
+      icon: <Flame className="w-4 h-4 text-orange-600" />
     },
     {
-      label: 'Helmets & Apparel',
+      label: 'Helmets & Gear',
       count: helmets.reduce((acc, h) => acc + h.quantityInStock, 0),
       unit: 'Units',
       value: helmetsValuation,
       percentage: helmetsPct,
-      color: 'bg-sky-500',
-      textColor: 'text-sky-400',
-      icon: <ShieldCheck className="w-4 h-4 text-sky-400" />
+      color: 'bg-gray-800',
+      textColor: 'text-gray-900',
+      icon: <ShieldCheck className="w-4 h-4 text-gray-700" />
     },
     {
       label: 'Parts & Fluids',
@@ -49,46 +49,46 @@ export const StockDistributionChart: React.FC = () => {
       unit: 'Items',
       value: partsValuation,
       percentage: partsPct,
-      color: 'bg-emerald-500',
-      textColor: 'text-emerald-400',
-      icon: <Disc className="w-4 h-4 text-emerald-400" />
+      color: 'bg-orange-400',
+      textColor: 'text-orange-500',
+      icon: <Disc className="w-4 h-4 text-orange-500" />
     }
   ];
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
           <div>
-            <h3 className="text-base font-bold text-white tracking-wide">Stock Capital Breakdown</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Asset allocation by inventory sector</p>
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Asset Distribution</h3>
+            <p className="text-xs text-gray-500 mt-0.5">Capital allocation across divisions</p>
           </div>
-          <div className="p-2 rounded-xl bg-slate-800 border border-slate-700">
-            <PieChart className="w-4 h-4 text-orange-400" />
+          <div className="p-1.5 rounded-lg bg-gray-50 border border-gray-200">
+            <PieChart className="w-4 h-4 text-orange-600" />
           </div>
         </div>
 
         {/* Progress Bar Segmented */}
         <div className="mt-5">
-          <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
+          <div className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden flex">
             <div 
               style={{ width: `${motoPct}%` }} 
-              className="bg-gradient-to-r from-orange-600 to-amber-500 transition-all duration-500" 
+              className="bg-orange-600 transition-all duration-500" 
               title={`Motorcycles: ${motoPct}%`}
             />
             <div 
               style={{ width: `${helmetsPct}%` }} 
-              className="bg-sky-500 transition-all duration-500" 
+              className="bg-gray-800 transition-all duration-500" 
               title={`Helmets & Gear: ${helmetsPct}%`}
             />
             <div 
               style={{ width: `${partsPct}%` }} 
-              className="bg-emerald-500 transition-all duration-500" 
+              className="bg-orange-400 transition-all duration-500" 
               title={`Spare Parts: ${partsPct}%`}
             />
           </div>
 
-          <div className="flex justify-between items-center text-[11px] font-mono text-slate-400 mt-2">
+          <div className="flex justify-between items-center text-[11px] font-mono text-gray-500 mt-2">
             <span>Bikes: {motoPct}%</span>
             <span>Gear: {helmetsPct}%</span>
             <span>Parts: {partsPct}%</span>
@@ -96,26 +96,26 @@ export const StockDistributionChart: React.FC = () => {
         </div>
 
         {/* Breakdown Items List */}
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-2.5">
           {categoriesBreakdown.map((item, idx) => (
-            <div key={idx} className="p-3 rounded-xl bg-slate-800/40 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-slate-800 border border-slate-700">
+            <div key={idx} className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-md bg-white border border-gray-200">
                   {item.icon}
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-white">{item.label}</div>
-                  <div className="text-[11px] text-slate-400">
-                    {item.count} {item.unit} in depot
+                  <div className="text-xs font-bold text-gray-900">{item.label}</div>
+                  <div className="text-[11px] text-gray-500">
+                    {item.count} {item.unit}
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-xs font-mono font-bold text-slate-200">
+                <div className="text-xs font-mono font-bold text-gray-900">
                   ${item.value.toLocaleString()}
                 </div>
-                <div className={`text-[10px] font-mono font-medium ${item.textColor}`}>
-                  {item.percentage}% of stock
+                <div className={`text-[10px] font-mono font-bold ${item.textColor}`}>
+                  {item.percentage}%
                 </div>
               </div>
             </div>
@@ -123,9 +123,9 @@ export const StockDistributionChart: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-5 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between text-xs">
-        <span className="text-slate-400">Total Live Capital:</span>
-        <span className="font-mono font-bold text-orange-400">${total.toLocaleString()}</span>
+      <div className="mt-5 p-3 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-between text-xs">
+        <span className="text-gray-600 font-medium">Total Live Value:</span>
+        <span className="font-mono font-bold text-orange-600">${total.toLocaleString()}</span>
       </div>
     </div>
   );

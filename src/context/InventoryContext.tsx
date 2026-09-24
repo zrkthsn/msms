@@ -82,7 +82,7 @@ interface InventoryContextType {
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined);
 
 export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
+  const [activeTab, setActiveTab] = useState<NavigationTab>('motorcycles');
   const [locations] = useState<StoreLocation[]>(INITIAL_LOCATIONS);
   const [selectedLocation, setSelectedLocation] = useState<StoreLocation>(INITIAL_LOCATIONS[0]);
   

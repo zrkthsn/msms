@@ -16,14 +16,22 @@ import {
   LayoutGrid, 
   List, 
   AlertTriangle,
-  X
+  X,
+  Download,
+  Plus
 } from 'lucide-react';
 
 interface MainInventoryTableProps {
   initialTab?: 'all' | 'motorcycles' | 'helmets' | 'parts';
+  title?: string;
+  subtitle?: string;
 }
 
-export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialTab = 'all' }) => {
+export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ 
+  initialTab = 'motorcycles',
+  title = 'WEB SHOWROOM',
+  subtitle = 'PUBLISHED INVENTORY MANAGER'
+}) => {
   const { 
     allItems, 
     motorcycles, 
@@ -34,18 +42,21 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
     setInspectItem,
     setAdjustStockItem,
     deleteItem,
+    openAddModal,
     addToast
   } = useInventory();
 
   // Tab filter: 'all' | 'motorcycles' | 'helmets' | 'parts'
   const [activeTab, setActiveTab] = useState<'all' | 'motorcycles' | 'helmets' | 'parts'>(initialTab);
   
-  // Dropdown filters
+  // Status sub-tab: 'available' | 'sold' | 'all'
+  const [availabilityTab, setAvailabilityTab] = useState<'available' | 'sold' | 'all'>('available');
+
+  // Condition filter: 'All' | 'New' | 'Used'
   const [conditionFilter, setConditionFilter] = useState<'All' | 'New' | 'Used'>('All');
-  const [statusFilter, setStatusFilter] = useState<'All' | 'In Stock' | 'Low Stock' | 'Out of Stock' | 'Reserved' | 'Sold'>('All');
   
-  // View mode for motorcycles: 'table' | 'grid'
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  // View mode: 'grid' (default matching screenshot) | 'table'
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
 
   // Sorting
   const [sortField, setSortField] = useState<'price' | 'name' | 'stock'>('price');
@@ -60,7 +71,35 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
     addToast({
       type: 'info',
       title: 'Identifier Copied',
-      message: `${text} copied.`
+      message: `${text} copied to clipboard.`
+    });
+  };
+
+  const handleExport = () => {
+    const headers = ['Type', 'Identifier', 'Brand', 'Model/Name', 'Stock', 'Price', 'Location'];
+    const rows = filteredItems.map(item => {
+      if (item.type === 'motorcycle') {
+        return ['Motorcycle', item.vin, item.brand, `${item.year} ${item.model}`, item.status, item.sellingPrice, item.location];
+      } else if (item.type === 'helmet') {
+        return ['Gear', item.sku, item.brand, `${item.model} (${item.size})`, item.quantityInStock, item.price, item.location];
+      } else {
+        return ['Spare Part', item.partNumber, item.brand, item.name, item.stockCount, item.unitPrice, item.location];
+      }
+    });
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Mantash_Showroom_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    addToast({
+      type: 'success',
+      title: 'Export Complete',
+      message: 'Exported active inventory catalog (.CSV).'
     });
   };
 
@@ -78,7 +117,24 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
       list = parts;
     }
 
-    // Search query filter (Name, VIN, Part #, SKU, Brand)
+    // Availability filter (Available vs Sold)
+    if (availabilityTab === 'available') {
+      list = list.filter(item => {
+        if (item.type === 'motorcycle') return item.status !== 'Sold';
+        if (item.type === 'helmet') return item.quantityInStock > 0;
+        if (item.type === 'part') return item.stockCount > 0;
+        return true;
+      });
+    } else if (availabilityTab === 'sold') {
+      list = list.filter(item => {
+        if (item.type === 'motorcycle') return item.status === 'Sold';
+        if (item.type === 'helmet') return item.quantityInStock === 0;
+        if (item.type === 'part') return item.stockCount === 0;
+        return true;
+      });
+    }
+
+    // Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(item => {
@@ -95,50 +151,24 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
             item.brand.toLowerCase().includes(q) ||
             item.model.toLowerCase().includes(q) ||
             item.sku.toLowerCase().includes(q) ||
-            item.gearType.toLowerCase().includes(q) ||
-            item.size.toLowerCase().includes(q)
+            item.gearType.toLowerCase().includes(q)
           );
         } else {
           return (
             item.brand.toLowerCase().includes(q) ||
             item.name.toLowerCase().includes(q) ||
             item.partNumber.toLowerCase().includes(q) ||
-            item.shelfBinLocation.toLowerCase().includes(q) ||
             item.category.toLowerCase().includes(q)
           );
         }
       });
     }
 
-    // Condition filter (for motorcycles)
+    // Condition filter
     if (conditionFilter !== 'All') {
       list = list.filter(item => {
         if (item.type === 'motorcycle') {
           return item.condition === conditionFilter;
-        }
-        return true; // parts and helmets pass through unless specifically filtered
-      });
-    }
-
-    // Status filter
-    if (statusFilter !== 'All') {
-      list = list.filter(item => {
-        if (statusFilter === 'In Stock') {
-          if (item.type === 'motorcycle') return item.status === 'In Stock';
-          if (item.type === 'helmet') return item.quantityInStock > item.minAlertThreshold;
-          if (item.type === 'part') return item.stockCount > item.reorderPoint;
-        } else if (statusFilter === 'Low Stock') {
-          if (item.type === 'motorcycle') return false;
-          if (item.type === 'helmet') return item.quantityInStock <= item.minAlertThreshold && item.quantityInStock > 0;
-          if (item.type === 'part') return item.stockCount <= item.reorderPoint && item.stockCount > 0;
-        } else if (statusFilter === 'Out of Stock') {
-          if (item.type === 'motorcycle') return false;
-          if (item.type === 'helmet') return item.quantityInStock === 0;
-          if (item.type === 'part') return item.stockCount === 0;
-        } else if (statusFilter === 'Reserved') {
-          return item.type === 'motorcycle' && item.status === 'Reserved';
-        } else if (statusFilter === 'Sold') {
-          return item.type === 'motorcycle' && item.status === 'Sold';
         }
         return true;
       });
@@ -165,7 +195,7 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
     });
 
     return list;
-  }, [allItems, motorcycles, helmets, parts, activeTab, searchQuery, conditionFilter, statusFilter, sortField, sortAsc]);
+  }, [allItems, motorcycles, helmets, parts, activeTab, availabilityTab, searchQuery, conditionFilter, sortField, sortAsc]);
 
   const toggleSort = (field: 'price' | 'name' | 'stock') => {
     if (sortField === field) {
@@ -177,175 +207,234 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
   };
 
   return (
-    <div className="space-y-4">
-      {/* Control Header: Tabs and View Toggles */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
-        {/* Navigation Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-          {[
-            { id: 'all', label: 'All Items', count: allItems.length },
-            { id: 'motorcycles', label: 'Motorcycles', count: motorcycles.length, icon: <Bike className="w-4 h-4" /> },
-            { id: 'helmets', label: 'Helmets & Gear', count: helmets.length, icon: <HardHat className="w-4 h-4" /> },
-            { id: 'parts', label: 'Spare Parts', count: parts.length, icon: <Wrench className="w-4 h-4" /> }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                activeTab === tab.id
-                  ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'
-              }`}
-            >
-              {tab.icon}
-              <span>{tab.label}</span>
-              <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
-                activeTab === tab.id ? 'bg-orange-500/30 text-orange-300' : 'bg-slate-800 text-slate-400'
-              }`}>
-                {tab.count}
-              </span>
-            </button>
-          ))}
+    <div className="space-y-4 bg-white">
+      {/* Top Banner Header matching screenshot */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 pb-3">
+        <div>
+          <h1 className="font-showroom text-4xl sm:text-5xl font-black italic tracking-tight text-gray-900 leading-none">
+            {title}
+          </h1>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 font-mono mt-1">
+            {subtitle}
+          </p>
         </div>
 
-        {/* View Toggle (Grid vs Table) when looking at Motorcycles */}
-        {activeTab === 'motorcycles' && (
-          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 self-end md:self-auto">
-            <button
-              onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-lg text-xs transition-colors ${
-                viewMode === 'table' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Table View"
-            >
-              <List className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-lg text-xs transition-colors ${
-                viewMode === 'grid' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Showroom Card View"
-            >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+        {/* Action Buttons: [EXPORT] and [+ NEW] */}
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 rounded-lg text-xs font-bold uppercase text-gray-900 shadow-sm transition-all"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>EXPORT</span>
+          </button>
+
+          <button
+            onClick={() => openAddModal('motorcycle')}
+            className="flex items-center gap-1.5 px-5 py-2 bg-black hover:bg-gray-800 text-white rounded-lg text-xs font-bold uppercase shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <Plus className="w-4 h-4 stroke-[3]" />
+            <span>NEW</span>
+          </button>
+        </div>
       </div>
 
-      {/* Filter Toolbar (Search & Filter Dropdowns) */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
-        {/* Search Input in Table */}
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      {/* Primary Category Underline Tabs */}
+      <div className="flex items-center gap-6 border-b border-gray-100 overflow-x-auto text-xs font-bold uppercase tracking-wider">
+        <button
+          onClick={() => setActiveTab('motorcycles')}
+          className={`pb-2.5 transition-all flex items-center gap-1.5 whitespace-nowrap ${
+            activeTab === 'motorcycles'
+              ? 'text-gray-900 border-b-2 border-orange-600 font-black'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          <span>Motorcycles</span>
+          <span className="text-[10px] font-mono font-medium text-gray-400">({motorcycles.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('helmets')}
+          className={`pb-2.5 transition-all flex items-center gap-1.5 whitespace-nowrap ${
+            activeTab === 'helmets'
+              ? 'text-gray-900 border-b-2 border-orange-600 font-black'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          <span>Accessories & Gear</span>
+          <span className="text-[10px] font-mono font-medium text-gray-400">({helmets.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('parts')}
+          className={`pb-2.5 transition-all flex items-center gap-1.5 whitespace-nowrap ${
+            activeTab === 'parts'
+              ? 'text-gray-900 border-b-2 border-orange-600 font-black'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          <span>Oils & Spare Parts</span>
+          <span className="text-[10px] font-mono font-medium text-gray-400">({parts.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('all')}
+          className={`pb-2.5 transition-all flex items-center gap-1.5 whitespace-nowrap ${
+            activeTab === 'all'
+              ? 'text-gray-900 border-b-2 border-orange-600 font-black'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          <span>All Stock</span>
+          <span className="text-[10px] font-mono font-medium text-gray-400">({allItems.length})</span>
+        </button>
+      </div>
+
+      {/* Sub-Tabs: AVAILABLE vs SOLD matching screenshot */}
+      <div className="flex items-center gap-6 pt-1">
+        <button
+          onClick={() => setAvailabilityTab('available')}
+          className={`text-xs font-black uppercase tracking-wider pb-1 transition-all ${
+            availabilityTab === 'available'
+              ? 'text-gray-900 border-b-2 border-orange-600'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          AVAILABLE
+        </button>
+
+        <button
+          onClick={() => setAvailabilityTab('sold')}
+          className={`text-xs font-black uppercase tracking-wider pb-1 transition-all ${
+            availabilityTab === 'sold'
+              ? 'text-gray-900 border-b-2 border-orange-600'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          SOLD
+        </button>
+
+        <button
+          onClick={() => setAvailabilityTab('all')}
+          className={`text-xs font-black uppercase tracking-wider pb-1 transition-all ${
+            availabilityTab === 'all'
+              ? 'text-gray-900 border-b-2 border-orange-600'
+              : 'text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          ALL STATUSES
+        </button>
+      </div>
+
+      {/* Search Bar & View Mode Toggle matching screenshot */}
+      <div className="flex items-center justify-between gap-4 py-3 border-b border-gray-200">
+        {/* Search input with uppercase placeholder */}
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-gray-400 absolute left-0 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by Name, Model, VIN, SKU, or Part #..."
+            placeholder="SEARCH INVENTORY..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-orange-500/50"
+            className="w-full pl-6 pr-8 py-1.5 bg-transparent text-xs text-gray-900 font-medium placeholder-gray-400 uppercase tracking-wider focus:outline-none"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
 
-        {/* Filter Dropdowns */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Condition Filter */}
-          <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-xl border border-slate-800">
-            <span className="text-[11px] font-mono text-slate-400 uppercase">Condition:</span>
-            <select
-              value={conditionFilter}
-              onChange={(e) => setConditionFilter(e.target.value as any)}
-              className="bg-transparent text-xs text-slate-200 font-medium focus:outline-none cursor-pointer"
-            >
-              <option value="All">All Conditions</option>
-              <option value="New">New Only</option>
-              <option value="Used">Used Only</option>
-            </select>
-          </div>
-
-          {/* Stock Status Filter */}
-          <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-xl border border-slate-800">
-            <span className="text-[11px] font-mono text-slate-400 uppercase">Status:</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="bg-transparent text-xs text-slate-200 font-medium focus:outline-none cursor-pointer"
-            >
-              <option value="All">All Statuses</option>
-              <option value="In Stock">In Stock</option>
-              <option value="Low Stock">Low Stock Alert</option>
-              <option value="Out of Stock">Out of Stock</option>
-              <option value="Reserved">Reserved</option>
-              <option value="Sold">Sold</option>
-            </select>
-          </div>
-
-          {/* Reset Filters if active */}
-          {(conditionFilter !== 'All' || statusFilter !== 'All' || searchQuery) && (
-            <button
-              onClick={() => {
-                setConditionFilter('All');
-                setStatusFilter('All');
-                setSearchQuery('');
-              }}
-              className="px-2.5 py-1.5 rounded-xl text-xs text-orange-400 hover:bg-orange-500/10 transition-colors font-medium"
-            >
-              Reset Filters
-            </button>
+        {/* Right side controls: Condition filter & View Mode switcher */}
+        <div className="flex items-center gap-3">
+          {activeTab === 'motorcycles' && (
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-600 font-mono">
+              <span className="text-[10px] text-gray-400 uppercase">Condition:</span>
+              <select
+                value={conditionFilter}
+                onChange={(e) => setConditionFilter(e.target.value as any)}
+                className="bg-transparent text-xs font-bold text-gray-900 focus:outline-none cursor-pointer"
+              >
+                <option value="All">All</option>
+                <option value="New">New</option>
+                <option value="Used">Used</option>
+              </select>
+            </div>
           )}
+
+          {/* Grid vs List View Icons matching screenshot */}
+          <div className="flex items-center gap-1 border border-gray-200 rounded-lg p-0.5 bg-white">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-md transition-colors ${
+                viewMode === 'grid' 
+                  ? 'bg-orange-50 text-orange-600 border border-orange-200' 
+                  : 'text-gray-400 hover:text-gray-700'
+              }`}
+              title="Grid View"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`p-1.5 rounded-md transition-colors ${
+                viewMode === 'table' 
+                  ? 'bg-orange-50 text-orange-600 border border-orange-200' 
+                  : 'text-gray-400 hover:text-gray-700'
+              }`}
+              title="Table View"
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* RENDER CONTENT: Card Grid vs Table */}
-      {activeTab === 'motorcycles' && viewMode === 'grid' ? (
+      {/* MAIN VIEW: Grid vs Table */}
+      {viewMode === 'grid' && activeTab === 'motorcycles' ? (
         <MotorcycleCardGrid items={filteredItems as MotorcycleItem[]} />
       ) : (
-        /* Unified Industrial Table */
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        /* Clean Light Table */
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase tracking-wider select-none">
-                  <th className="py-3 px-4 font-medium">Item / Specs</th>
-                  <th className="py-3 px-4 font-medium">Classification</th>
-                  <th className="py-3 px-4 font-medium">Identifier</th>
+                <tr className="bg-gray-50/80 border-b border-gray-200 text-gray-500 font-mono text-[11px] uppercase tracking-wider select-none">
+                  <th className="py-3 px-4 font-bold">Item / Model</th>
+                  <th className="py-3 px-4 font-bold">Type</th>
+                  <th className="py-3 px-4 font-bold">Identifier</th>
                   <th 
                     onClick={() => toggleSort('stock')}
-                    className="py-3 px-4 font-medium cursor-pointer hover:text-white transition-colors"
+                    className="py-3 px-4 font-bold cursor-pointer hover:text-gray-900 transition-colors"
                   >
                     <div className="flex items-center gap-1.5">
-                      <span>Stock Level</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                      <span>Stock Status</span>
+                      <ArrowUpDown className="w-3 h-3 text-gray-400" />
                     </div>
                   </th>
                   <th 
                     onClick={() => toggleSort('price')}
-                    className="py-3 px-4 font-medium cursor-pointer hover:text-white transition-colors text-right"
+                    className="py-3 px-4 font-bold cursor-pointer hover:text-gray-900 transition-colors text-right"
                   >
                     <div className="flex items-center justify-end gap-1.5">
-                      <span>Pricing (USD)</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                      <span>Price (USD)</span>
+                      <ArrowUpDown className="w-3 h-3 text-gray-400" />
                     </div>
                   </th>
-                  <th className="py-3 px-4 font-medium text-right">Actions</th>
+                  <th className="py-3 px-4 font-bold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-gray-100">
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-16 text-center text-slate-400">
+                    <td colSpan={6} className="py-16 text-center text-gray-400">
                       <div className="max-w-xs mx-auto">
-                        <AlertTriangle className="w-8 h-8 text-amber-500/60 mx-auto mb-2" />
-                        <p className="font-semibold text-white">No Inventory Items Found</p>
-                        <p className="text-xs text-slate-400 mt-1">Try clearing your filters or changing search keywords.</p>
+                        <AlertTriangle className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                        <p className="font-bold text-gray-900">No Inventory Items Found</p>
+                        <p className="text-xs text-gray-500 mt-1">Try clearing filters or search query.</p>
                       </div>
                     </td>
                   </tr>
@@ -356,16 +445,12 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
                     const isGear = item.type === 'helmet';
                     const isPart = item.type === 'part';
 
-                    // Specifications & badges
                     let primaryTitle = '';
                     let specsSubtitle = '';
                     let identifier = '';
                     let typeBadge = '';
                     let stockQty = 0;
-                    let isLow = false;
-                    let isOut = false;
                     let sellingPrice = 0;
-                    let costPrice = 0;
 
                     if (isMoto) {
                       primaryTitle = `${item.year} ${item.brand} ${item.model}`;
@@ -374,53 +459,46 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
                       typeBadge = 'Motorcycle';
                       stockQty = item.status === 'In Stock' ? 1 : 0;
                       sellingPrice = item.sellingPrice;
-                      costPrice = item.costPrice;
                     } else if (isGear) {
                       primaryTitle = `${item.brand} ${item.model}`;
                       specsSubtitle = `Size: ${item.size} • ${item.safetyCert} • ${item.gearType}`;
                       identifier = item.sku;
-                      typeBadge = 'Helmet/Gear';
+                      typeBadge = 'Gear';
                       stockQty = item.quantityInStock;
-                      isLow = item.quantityInStock <= item.minAlertThreshold && item.quantityInStock > 0;
-                      isOut = item.quantityInStock === 0;
                       sellingPrice = item.price;
-                      costPrice = item.costPrice;
                     } else {
                       primaryTitle = `${item.brand} - ${item.name}`;
                       specsSubtitle = `Bin: ${item.shelfBinLocation} • ${item.category}`;
                       identifier = item.partNumber;
                       typeBadge = 'Spare Part';
                       stockQty = item.stockCount;
-                      isLow = item.stockCount <= item.reorderPoint && item.stockCount > 0;
-                      isOut = item.stockCount === 0;
                       sellingPrice = item.unitPrice;
-                      costPrice = item.unitCost;
                     }
 
                     return (
                       <tr
                         key={item.id}
                         onClick={() => setInspectItem(item)}
-                        className="hover:bg-slate-800/40 transition-colors cursor-pointer group"
+                        className="hover:bg-gray-50 transition-colors cursor-pointer group"
                       >
                         {/* Item & Specs */}
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 overflow-hidden text-slate-500 group-hover:border-orange-500/40 transition-colors">
+                            <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden text-gray-400 group-hover:border-orange-500 transition-colors">
                               {isMoto && (item.imageUrl ? (
-                                <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                                <img src={item.imageUrl} alt="" className="w-full h-full object-contain" />
                               ) : (
-                                <Bike className="w-5 h-5 text-orange-400" />
+                                <Bike className="w-5 h-5 text-orange-600" />
                               ))}
-                              {isGear && <HardHat className="w-5 h-5 text-sky-400" />}
-                              {isPart && <Wrench className="w-5 h-5 text-emerald-400" />}
+                              {isGear && <HardHat className="w-5 h-5 text-sky-600" />}
+                              {isPart && <Wrench className="w-5 h-5 text-emerald-600" />}
                             </div>
 
                             <div>
-                              <div className="font-semibold text-white text-xs group-hover:text-orange-400 transition-colors">
+                              <div className="font-bold text-gray-900 text-xs group-hover:text-orange-600 transition-colors">
                                 {primaryTitle}
                               </div>
-                              <div className="text-[11px] text-slate-400 mt-0.5">
+                              <div className="text-[11px] text-gray-500 mt-0.5">
                                 {specsSubtitle}
                               </div>
                             </div>
@@ -429,24 +507,24 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
 
                         {/* Classification */}
                         <td className="py-3 px-4">
-                          <span className={`text-[10px] font-mono font-medium px-2 py-0.5 rounded uppercase border ${
+                          <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase border ${
                             isMoto 
-                              ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' 
+                              ? 'bg-orange-50 text-orange-700 border-orange-200' 
                               : isGear 
-                              ? 'bg-sky-500/10 text-sky-400 border-sky-500/30' 
-                              : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                              ? 'bg-sky-50 text-sky-700 border-sky-200' 
+                              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                           }`}>
                             {typeBadge}
                           </span>
                         </td>
 
-                        {/* Identifier (VIN/SKU/Part#) */}
+                        {/* Identifier */}
                         <td className="py-3 px-4 font-mono text-[11px]">
-                          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-950 border border-slate-800 text-slate-300">
+                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-gray-100 border border-gray-200 text-gray-700">
                             <span>{identifier}</span>
                             <button
                               onClick={(e) => copyToClipboard(identifier, e)}
-                              className="text-slate-500 hover:text-white transition-colors"
+                              className="text-gray-400 hover:text-gray-800 transition-colors"
                               title="Copy ID"
                             >
                               <Copy className="w-3 h-3" />
@@ -454,74 +532,53 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
                           </div>
                         </td>
 
-                        {/* Stock Level with Visual Badge */}
+                        {/* Stock Status */}
                         <td className="py-3 px-4">
                           {isMoto ? (
-                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
                               item.status === 'In Stock'
-                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                 : item.status === 'Reserved'
-                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                : 'bg-gray-100 text-gray-600 border border-gray-200'
                             }`}>
                               <span className={`w-1.5 h-1.5 rounded-full ${
-                                item.status === 'In Stock' ? 'bg-emerald-400' : item.status === 'Reserved' ? 'bg-amber-400' : 'bg-slate-500'
+                                item.status === 'In Stock' ? 'bg-emerald-500' : item.status === 'Reserved' ? 'bg-amber-500' : 'bg-gray-400'
                               }`} />
                               {item.status}
                             </span>
                           ) : (
-                            <div className="flex items-center gap-2">
-                              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
-                                isOut
-                                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                                  : isLow
-                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                              }`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${
-                                  isOut ? 'bg-rose-400' : isLow ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'
-                                }`} />
-                                {stockQty} in stock
-                              </span>
-                              {isLow && (
-                                <span className="text-[10px] font-mono text-amber-400 font-semibold">
-                                  Low
-                                </span>
-                              )}
-                            </div>
+                            <span className="font-mono text-xs font-bold text-gray-900">
+                              {stockQty} units
+                            </span>
                           )}
                         </td>
 
                         {/* Pricing */}
-                        <td className="py-3 px-4 text-right">
-                          <div className="font-mono font-bold text-white text-xs">
-                            ${sellingPrice.toLocaleString()}
-                          </div>
-                          <div className="font-mono text-[10px] text-emerald-400">
-                            +${(sellingPrice - costPrice).toFixed(0)} ({Math.round(((sellingPrice - costPrice) / (sellingPrice || 1)) * 100)}%)
-                          </div>
+                        <td className="py-3 px-4 text-right font-mono font-bold text-gray-900 text-xs">
+                          ${sellingPrice.toLocaleString()}
                         </td>
 
-                        {/* Row Action Menu */}
+                        {/* Actions */}
                         <td className="py-3 px-4 text-right">
                           <div className="relative inline-block text-left" onClick={(e) => e.stopPropagation()}>
                             <button
                               onClick={() => setActiveMenuId(isMenuOpen ? null : item.id)}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                              className="p-1 rounded-md text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                             >
                               <MoreVertical className="w-4 h-4" />
                             </button>
 
                             {isMenuOpen && (
-                              <div className="absolute right-0 mt-1 w-44 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-1 z-30 animate-in fade-in zoom-in-95 text-left">
+                              <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-xl p-1 z-30 text-left">
                                 <button
                                   onClick={() => {
                                     setActiveMenuId(null);
                                     setInspectItem(item);
                                   }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 rounded-lg"
+                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-gray-700 hover:bg-gray-100 rounded-md"
                                 >
-                                  <Eye className="w-3.5 h-3.5 text-orange-400" />
+                                  <Eye className="w-3.5 h-3.5 text-orange-600" />
                                   <span>View Specs</span>
                                 </button>
                                 <button
@@ -529,22 +586,22 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
                                     setActiveMenuId(null);
                                     setAdjustStockItem(item);
                                   }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 rounded-lg"
+                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-gray-700 hover:bg-gray-100 rounded-md"
                                 >
-                                  <PackagePlus className="w-3.5 h-3.5 text-sky-400" />
+                                  <PackagePlus className="w-3.5 h-3.5 text-blue-600" />
                                   <span>Adjust Stock</span>
                                 </button>
                                 <button
                                   onClick={() => {
                                     setActiveMenuId(null);
-                                    if (confirm('Delete this item from stock permanently?')) {
+                                    if (confirm('Delete this item?')) {
                                       deleteItem(item.id, item.type);
                                     }
                                   }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:bg-rose-500/10 rounded-lg"
+                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-md"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
-                                  <span>Delete Item</span>
+                                  <span>Delete</span>
                                 </button>
                               </div>
                             )}
@@ -556,12 +613,6 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({ initialT
                 )}
               </tbody>
             </table>
-          </div>
-
-          {/* Table Footer Summary */}
-          <div className="p-3 bg-slate-950/80 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
-            <span>Showing {filteredItems.length} active inventory units</span>
-            <span>Mantash Multi-Bay Depot Synchronized</span>
           </div>
         </div>
       )}

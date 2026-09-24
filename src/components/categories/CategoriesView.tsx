@@ -38,14 +38,16 @@ export const CategoriesView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white">
       {/* Header */}
-      <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+      <div className="bg-white p-5 rounded-xl border border-gray-200 flex items-center justify-between shadow-xs">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-wide">Category Taxonomies</h2>
-          <p className="text-xs text-slate-400 mt-1">Organized warehouse classification and stock distribution</p>
+          <h2 className="font-showroom text-3xl font-black italic tracking-wide text-gray-900">
+            INVENTORY CATEGORIES
+          </h2>
+          <p className="text-xs text-gray-500 font-mono">Organized showroom fleet, apparel divisions, and spare parts catalog</p>
         </div>
-        <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
+        <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
           <Layers className="w-5 h-5" />
         </div>
       </div>
@@ -53,15 +55,15 @@ export const CategoriesView: React.FC = () => {
       {/* Grid of Main Categories */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Category Group 1: Motorcycles */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
-              <div className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/30">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+              <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
                 <Bike className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Motorcycles Fleet</h3>
-                <span className="text-xs text-orange-400 font-mono">{motorcycles.length} units listed</span>
+                <h3 className="text-sm font-bold text-gray-900 uppercase">Motorcycle Fleet</h3>
+                <span className="text-xs text-orange-600 font-mono font-bold">{motorcycles.length} units listed</span>
               </div>
             </div>
 
@@ -70,16 +72,16 @@ export const CategoriesView: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => handleSelectCategory('motorcycles', cat.search)}
-                  className="p-3 rounded-xl bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 cursor-pointer flex items-center justify-between group transition-all"
+                  className="p-3 rounded-lg bg-gray-50 hover:bg-orange-50/50 border border-gray-200 cursor-pointer flex items-center justify-between group transition-all"
                 >
-                  <span className="text-xs font-medium text-slate-300 group-hover:text-white">
+                  <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">
                     {cat.name}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 group-hover:text-orange-400 border border-slate-700">
-                      {cat.count} bikes
+                    <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-white text-gray-700 border border-gray-200">
+                      {cat.count} units
                     </span>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-orange-400 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-orange-600 transition-transform group-hover:translate-x-0.5" />
                   </div>
                 </div>
               ))}
@@ -88,22 +90,22 @@ export const CategoriesView: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('motorcycles')}
-            className="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors"
+            className="mt-5 w-full py-2.5 rounded-lg bg-white hover:bg-gray-50 text-xs font-bold uppercase text-gray-900 border border-gray-300 transition-colors shadow-xs"
           >
-            Explore All Motorcycles
+            Explore Showroom
           </button>
         </div>
 
         {/* Category Group 2: Helmets & Gear */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
-              <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/30">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+              <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
                 <HardHat className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Helmets & Rider Gear</h3>
-                <span className="text-xs text-sky-400 font-mono">
+                <h3 className="text-sm font-bold text-gray-900 uppercase">Accessories & Gear</h3>
+                <span className="text-xs text-orange-600 font-mono font-bold">
                   {helmets.reduce((a, b) => a + b.quantityInStock, 0)} units in stock
                 </span>
               </div>
@@ -114,16 +116,16 @@ export const CategoriesView: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => handleSelectCategory('helmets', cat.search)}
-                  className="p-3 rounded-xl bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 cursor-pointer flex items-center justify-between group transition-all"
+                  className="p-3 rounded-lg bg-gray-50 hover:bg-orange-50/50 border border-gray-200 cursor-pointer flex items-center justify-between group transition-all"
                 >
-                  <span className="text-xs font-medium text-slate-300 group-hover:text-white">
+                  <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">
                     {cat.name}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 group-hover:text-sky-400 border border-slate-700">
+                    <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-white text-gray-700 border border-gray-200">
                       {cat.count} models
                     </span>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-orange-600 transition-transform group-hover:translate-x-0.5" />
                   </div>
                 </div>
               ))}
@@ -132,23 +134,23 @@ export const CategoriesView: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('helmets')}
-            className="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors"
+            className="mt-5 w-full py-2.5 rounded-lg bg-white hover:bg-gray-50 text-xs font-bold uppercase text-gray-900 border border-gray-300 transition-colors shadow-xs"
           >
-            Explore Helmets & Gear
+            Explore Accessories
           </button>
         </div>
 
         {/* Category Group 3: Spare Parts & Fluids */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+              <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
                 <Wrench className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Parts & Accessories</h3>
-                <span className="text-xs text-emerald-400 font-mono">
-                  {parts.reduce((a, b) => a + b.stockCount, 0)} parts in warehouse
+                <h3 className="text-sm font-bold text-gray-900 uppercase">Oils & Spare Parts</h3>
+                <span className="text-xs text-orange-600 font-mono font-bold">
+                  {parts.reduce((a, b) => a + b.stockCount, 0)} items in bins
                 </span>
               </div>
             </div>
@@ -158,16 +160,16 @@ export const CategoriesView: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => handleSelectCategory('parts', cat.search)}
-                  className="p-3 rounded-xl bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 cursor-pointer flex items-center justify-between group transition-all"
+                  className="p-3 rounded-lg bg-gray-50 hover:bg-orange-50/50 border border-gray-200 cursor-pointer flex items-center justify-between group transition-all"
                 >
-                  <span className="text-xs font-medium text-slate-300 group-hover:text-white">
+                  <span className="text-xs font-bold text-gray-800 group-hover:text-orange-600">
                     {cat.name}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 group-hover:text-emerald-400 border border-slate-700">
+                    <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-white text-gray-700 border border-gray-200">
                       {cat.count} items
                     </span>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-orange-600 transition-transform group-hover:translate-x-0.5" />
                   </div>
                 </div>
               ))}
@@ -176,7 +178,7 @@ export const CategoriesView: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('parts')}
-            className="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors"
+            className="mt-5 w-full py-2.5 rounded-lg bg-white hover:bg-gray-50 text-xs font-bold uppercase text-gray-900 border border-gray-300 transition-colors shadow-xs"
           >
             Explore Spare Parts
           </button>

@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { useInventory } from '../../context/InventoryContext';
 import type { NavigationTab } from '../../types/inventory';
 import { 
-  LayoutDashboard, 
-  Bike, 
-  HardHat, 
-  Wrench, 
+  Globe, 
+  Package, 
+  Droplet, 
   Tags, 
   Settings, 
   ChevronLeft, 
   ChevronRight, 
   Flame, 
-  Warehouse,
-  ShieldCheck
+  LogOut,
+  LayoutDashboard
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -21,14 +20,12 @@ export const Sidebar: React.FC = () => {
     setActiveTab, 
     motorcycles, 
     helmets, 
-    parts, 
-    lowStockItems,
-    selectedLocation
+    parts 
   } = useInventory();
 
   const [collapsed, setCollapsed] = useState(false);
 
-  const navItems: { id: NavigationTab; label: string; icon: React.ReactNode; badge?: number | string; badgeColor?: string }[] = [
+  const navItems: { id: NavigationTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     {
       id: 'dashboard',
       label: 'Dashboard',
@@ -36,24 +33,21 @@ export const Sidebar: React.FC = () => {
     },
     {
       id: 'motorcycles',
-      label: 'Motorcycles',
-      icon: <Bike className="w-5 h-5 shrink-0" />,
-      badge: motorcycles.length,
-      badgeColor: 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+      label: 'Web Showroom',
+      icon: <Globe className="w-5 h-5 shrink-0" />,
+      badge: motorcycles.length
     },
     {
       id: 'helmets',
-      label: 'Helmets & Gear',
-      icon: <HardHat className="w-5 h-5 shrink-0" />,
-      badge: helmets.reduce((acc, h) => acc + h.quantityInStock, 0),
-      badgeColor: 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+      label: 'Accessories & Gear',
+      icon: <Package className="w-5 h-5 shrink-0" />,
+      badge: helmets.reduce((acc, h) => acc + h.quantityInStock, 0)
     },
     {
       id: 'parts',
-      label: 'Spare Parts',
-      icon: <Wrench className="w-5 h-5 shrink-0" />,
-      badge: parts.reduce((acc, p) => acc + p.stockCount, 0),
-      badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+      label: 'Oils & Spare Parts',
+      icon: <Droplet className="w-5 h-5 shrink-0" />,
+      badge: parts.reduce((acc, p) => acc + p.stockCount, 0)
     },
     {
       id: 'categories',
@@ -69,51 +63,37 @@ export const Sidebar: React.FC = () => {
 
   return (
     <aside 
-      className={`relative flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 z-30 select-none ${
+      className={`relative flex flex-col bg-white border-r border-gray-200 transition-all duration-300 z-30 select-none ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
       {/* Brand Header */}
-      <div className="h-18 flex items-center px-4 border-b border-slate-800/80 justify-between">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-orange-500/20 shrink-0">
-            <Flame className="w-6 h-6 text-slate-950 fill-slate-950" />
+      <div className="h-16 flex items-center px-4 border-b border-gray-100 justify-between">
+        <div className="flex items-center gap-2.5 overflow-hidden cursor-pointer" onClick={() => setActiveTab('motorcycles')}>
+          <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center text-white font-black shadow-sm shrink-0">
+            <Flame className="w-5 h-5 fill-white" />
           </div>
           {!collapsed && (
-            <div className="leading-tight truncate">
-              <span className="font-tech text-base font-bold tracking-wider text-white flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
+              <span className="font-showroom text-xl font-black italic tracking-wide text-gray-900">
                 MANTASH
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 font-mono font-medium">
-                  MSMS
-                </span>
               </span>
-              <p className="text-[10px] tracking-widest text-slate-400 uppercase font-mono truncate">
-                Stock Engine v2.4
-              </p>
+              <span className="font-showroom text-xl font-black italic tracking-wide text-orange-600">
+                OS
+              </span>
             </div>
           )}
         </div>
 
-        {/* Collapse toggle button */}
+        {/* Collapse toggle button matching screenshot with round border */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          className="w-6 h-6 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+          title={collapsed ? 'Expand' : 'Collapse'}
         >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
         </button>
       </div>
-
-      {/* Store Location Pill (Desktop) */}
-      {!collapsed && (
-        <div className="px-4 py-3 mx-3 my-3 rounded-xl bg-slate-800/50 border border-slate-800 flex items-center gap-2.5">
-          <Warehouse className="w-4 h-4 text-orange-400 shrink-0" />
-          <div className="truncate">
-            <div className="text-[10px] uppercase font-mono text-slate-400 tracking-wider">Active Depot</div>
-            <div className="text-xs font-semibold text-slate-200 truncate">{selectedLocation.name}</div>
-          </div>
-        </div>
-      )}
 
       {/* Navigation List */}
       <nav className="flex-1 py-4 px-3 space-y-1.5 overflow-y-auto">
@@ -123,14 +103,14 @@ export const Sidebar: React.FC = () => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
                 isActive
-                  ? 'bg-gradient-to-r from-orange-500/20 to-amber-500/10 text-orange-400 border border-orange-500/30 shadow-inner'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 border border-transparent'
+                  ? 'bg-orange-600 text-white shadow-sm font-bold'
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               } ${collapsed ? 'justify-center px-0' : ''}`}
               title={collapsed ? item.label : undefined}
             >
-              <div className={`transition-transform duration-200 ${isActive ? 'text-orange-400 scale-105' : 'group-hover:text-slate-200'}`}>
+              <div className={`transition-transform duration-200 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-gray-900'}`}>
                 {item.icon}
               </div>
 
@@ -138,7 +118,11 @@ export const Sidebar: React.FC = () => {
                 <>
                   <span className="flex-1 text-left tracking-wide truncate">{item.label}</span>
                   {item.badge !== undefined && (
-                    <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${item.badgeColor}`}>
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                      isActive 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-gray-100 text-gray-600 border border-gray-200'
+                    }`}>
                       {item.badge}
                     </span>
                   )}
@@ -149,36 +133,33 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Alert quick banner inside sidebar if low stock */}
-      {!collapsed && lowStockItems.length > 0 && (
-        <div className="mx-3 mb-3 p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 text-amber-300">
-          <div className="flex items-center gap-2 text-xs font-bold">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-            <span>Low Stock Alert</span>
-          </div>
-          <p className="text-[11px] text-amber-200/80 mt-1">
-            {lowStockItems.length} inventory lines require reordering.
-          </p>
-        </div>
-      )}
-
-      {/* Footer / User Profile */}
-      <div className="p-3 border-t border-slate-800/80">
-        <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : 'px-2'}`}>
-          <div className="relative">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-600 border border-slate-600 flex items-center justify-center font-bold text-xs text-white">
-              AM
-            </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-slate-900" />
-          </div>
-          {!collapsed && (
-            <div className="truncate">
-              <div className="text-xs font-semibold text-slate-200 flex items-center gap-1">
-                Alex Mantash
-                <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
+      {/* Bottom Profile Box matching screenshot */}
+      <div className="p-3 border-t border-gray-100">
+        <div className={`border border-gray-200 rounded-xl p-3 bg-white flex items-center justify-between ${
+          collapsed ? 'justify-center p-2' : ''
+        }`}>
+          {!collapsed ? (
+            <>
+              <div className="truncate pr-2">
+                <div className="text-xs font-bold text-gray-900 truncate">admin@motors.com</div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider font-mono">
+                  ADMINISTRATOR
+                </div>
               </div>
-              <div className="text-[10px] text-slate-400 font-mono">Head of Operations</div>
-            </div>
+              <button 
+                className="text-gray-400 hover:text-gray-700 p-1 rounded-md transition-colors"
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <button 
+              className="text-gray-400 hover:text-gray-700 p-1"
+              title="admin@motors.com"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           )}
         </div>
       </div>

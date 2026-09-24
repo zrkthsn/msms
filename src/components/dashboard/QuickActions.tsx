@@ -1,12 +1,11 @@
 import React from 'react';
 import { useInventory } from '../../context/InventoryContext';
-import { PlusCircle, PackagePlus, HardHat, FileSpreadsheet, Sparkles } from 'lucide-react';
+import { PlusCircle, PackagePlus, HardHat, Download, Sparkles } from 'lucide-react';
 
 export const QuickActions: React.FC = () => {
   const { openAddModal, addToast, allItems } = useInventory();
 
   const handleExport = () => {
-    // Generate simple CSV download for inventory manifest
     const headers = ['Type', 'Identifier', 'Brand', 'Model/Name', 'Stock', 'Price', 'Location'];
     const rows = allItems.map(item => {
       if (item.type === 'motorcycle') {
@@ -35,18 +34,18 @@ export const QuickActions: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-slate-900 border border-slate-800">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-white border border-gray-200 shadow-xs">
       <div className="flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-orange-400" />
-        <span className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-          Quick Workflows
+        <Sparkles className="w-4 h-4 text-orange-600" />
+        <span className="text-xs font-mono uppercase tracking-wider text-gray-700 font-bold">
+          Quick Operations
         </span>
       </div>
 
       <div className="flex flex-wrap items-center gap-2.5">
         <button
           onClick={() => openAddModal('motorcycle')}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-orange-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Add Motorcycle</span>
@@ -54,27 +53,27 @@ export const QuickActions: React.FC = () => {
 
         <button
           onClick={() => openAddModal('part')}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-xs border border-slate-700 shadow-sm transition-all hover:border-slate-600"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 text-gray-900 font-bold text-xs uppercase border border-gray-300 shadow-xs transition-all"
         >
-          <PackagePlus className="w-4 h-4 text-emerald-400" />
+          <PackagePlus className="w-4 h-4 text-orange-600" />
           <span>Receive Parts</span>
         </button>
 
         <button
           onClick={() => openAddModal('helmet')}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-xs border border-slate-700 shadow-sm transition-all hover:border-slate-600"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 text-gray-900 font-bold text-xs uppercase border border-gray-300 shadow-xs transition-all"
         >
-          <HardHat className="w-4 h-4 text-sky-400" />
-          <span>Add Helmet & Gear</span>
+          <HardHat className="w-4 h-4 text-gray-700" />
+          <span>Add Accessories</span>
         </button>
 
         <button
           onClick={handleExport}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs border border-slate-700/60 transition-all"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs uppercase border border-gray-300 transition-all"
           title="Export CSV"
         >
-          <FileSpreadsheet className="w-4 h-4 text-slate-400" />
-          <span className="hidden sm:inline">Export Manifest</span>
+          <Download className="w-4 h-4 text-gray-500" />
+          <span className="hidden sm:inline">Export</span>
         </button>
       </div>
     </div>

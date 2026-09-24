@@ -18,43 +18,43 @@ export const NotificationsDrawer: React.FC = () => {
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
         onClick={() => setIsNotificationsOpen(false)}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl flex flex-col">
+        <div className="w-screen max-w-md bg-white border-l border-gray-200 shadow-2xl flex flex-col">
           {/* Header */}
-          <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/90 backdrop-blur-sm">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
-                <Bell className="w-5 h-5 animate-pulse" />
+          <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-white">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-orange-50 border border-orange-200 text-orange-600">
+                <Bell className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white tracking-wide">Stock Threshold Alerts</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-base font-bold text-gray-900 uppercase tracking-wide">Stock Threshold Alerts</h2>
+                <p className="text-xs text-gray-500">
                   {lowStockItems.length} {lowStockItems.length === 1 ? 'item requires' : 'items require'} immediate reordering
                 </p>
               </div>
             </div>
             <button
               onClick={() => setIsNotificationsOpen(false)}
-              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="p-1.5 text-gray-400 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Alert Body */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
             {lowStockItems.length === 0 ? (
               <div className="text-center py-16 px-4">
-                <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 className="w-7 h-7" />
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-semibold text-white">All Stock Levels Healthy</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-                  No parts or gear are currently below their minimum replenishment threshold.
+                <h3 className="text-sm font-bold text-gray-900">All Stock Levels Optimal</h3>
+                <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
+                  No accessories or parts are currently below replenishment thresholds.
                 </p>
               </div>
             ) : (
@@ -64,88 +64,77 @@ export const NotificationsDrawer: React.FC = () => {
                 return (
                   <div
                     key={idx}
-                    className={`p-4 rounded-xl border transition-all ${
-                      isOutOfStock 
-                        ? 'bg-rose-950/20 border-rose-500/40 hover:border-rose-500/60' 
-                        : 'bg-amber-950/20 border-amber-500/30 hover:border-amber-500/50'
-                    }`}
+                    className="p-4 rounded-xl border border-gray-200 bg-white shadow-xs"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-2.5">
-                        <div className={`mt-0.5 p-1.5 rounded-lg shrink-0 ${
-                          isOutOfStock ? 'bg-rose-500/20 text-rose-400' : 'bg-amber-500/20 text-amber-400'
+                        <div className={`mt-0.5 p-1.5 rounded-md shrink-0 ${
+                          isOutOfStock ? 'bg-red-50 text-red-600' : 'bg-orange-50 text-orange-600'
                         }`}>
                           {isOutOfStock ? <ShieldAlert className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                              isOutOfStock ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'
+                            <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded uppercase tracking-wider font-mono ${
+                              isOutOfStock ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'
                             }`}>
-                              {isOutOfStock ? 'Out of Stock' : 'Low Stock Alert'}
+                              {isOutOfStock ? 'Out of Stock' : 'Low Stock'}
                             </span>
-                            <span className="text-[11px] font-mono text-slate-400">{alert.code}</span>
+                            <span className="text-[11px] font-mono text-gray-400 font-bold">{alert.code}</span>
                           </div>
-                          <h4 className="text-sm font-semibold text-slate-100 mt-1 leading-snug">
+                          <h4 className="text-xs font-bold text-gray-900 mt-1 leading-snug">
                             {alert.name}
                           </h4>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                    <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
                       <div>
-                        <span className="text-slate-400">Current: </span>
-                        <span className={`font-mono font-bold ${isOutOfStock ? 'text-rose-400' : 'text-amber-400'}`}>
+                        <span className="text-gray-400 font-mono text-[11px]">Current: </span>
+                        <span className={`font-mono font-bold ${isOutOfStock ? 'text-red-600' : 'text-orange-600'}`}>
                           {alert.currentStock} units
                         </span>
-                        <span className="text-slate-500 mx-1.5">|</span>
-                        <span className="text-slate-400">Min Alert: </span>
-                        <span className="font-mono text-slate-300">{alert.threshold} units</span>
+                        <span className="text-gray-300 mx-1.5">|</span>
+                        <span className="text-gray-400 font-mono text-[11px]">Min Alert: </span>
+                        <span className="font-mono text-gray-700 font-bold">{alert.threshold} units</span>
                       </div>
                     </div>
 
                     <div className="mt-3 flex items-center gap-2">
                       <button
                         onClick={() => {
-                          adjustStock(alert.item.id, alert.item.type, 10, 'Quick Reorder from Low Stock Alert');
+                          adjustStock(alert.item.id, alert.item.type, 10, 'Quick Restock from Alert');
                         }}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold shadow-md transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase shadow-xs transition-colors"
                       >
                         <PackagePlus className="w-3.5 h-3.5" />
-                        Quick Restock +10
+                        Restock +10
                       </button>
                       <button
                         onClick={() => {
                           setIsNotificationsOpen(false);
                           setAdjustStockItem(alert.item);
                         }}
-                        className="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                        className="py-1.5 px-2.5 rounded-lg bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold uppercase border border-gray-300 transition-colors"
                       >
-                        Custom Qty
+                        Adjust
                       </button>
                       <button
                         onClick={() => {
                           setIsNotificationsOpen(false);
                           setInspectItem(alert.item);
                         }}
-                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+                        className="p-1.5 rounded-lg bg-white hover:bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-300 transition-colors"
                         title="View Details"
                       >
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
                 );
               })
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="p-4 border-t border-slate-800 bg-slate-900/90 text-center">
-            <p className="text-[11px] text-slate-400">
-              Thresholds configure automatically based on supplier lead times and sales velocity.
-            </p>
           </div>
         </div>
       </div>

@@ -16,50 +16,38 @@ const AppContent: React.FC = () => {
   const { activeTab } = useInventory();
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
-      {/* Sidebar Navigation */}
+    <div className="flex h-screen w-screen overflow-hidden bg-white text-gray-900">
+      {/* Sidebar Navigation matching screenshot */}
       <Sidebar />
 
       {/* Main Body Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
         {/* Topbar Navigation & Search */}
         <Topbar />
 
         {/* Scrollable View Container */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 overflow-y-auto px-6 py-4 sm:px-8 sm:py-6 space-y-6 bg-white">
           {activeTab === 'dashboard' && <DashboardView />}
           {activeTab === 'motorcycles' && (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 p-5 rounded-2xl border border-slate-800">
-                <div>
-                  <h2 className="text-xl font-bold text-white tracking-wide">Motorcycle Fleet & Showroom</h2>
-                  <p className="text-xs text-slate-400 mt-1">Superbikes, hypernakeds, cruisers, and adventure tourers</p>
-                </div>
-              </div>
-              <MainInventoryTable initialTab="motorcycles" />
-            </div>
+            <MainInventoryTable 
+              initialTab="motorcycles" 
+              title="WEB SHOWROOM" 
+              subtitle="PUBLISHED INVENTORY MANAGER" 
+            />
           )}
           {activeTab === 'helmets' && (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 p-5 rounded-2xl border border-slate-800">
-                <div>
-                  <h2 className="text-xl font-bold text-white tracking-wide">Helmets & Rider Apparel</h2>
-                  <p className="text-xs text-slate-400 mt-1">DOT, ECE, and FIM certified safety gear, leathers, and accessories</p>
-                </div>
-              </div>
-              <MainInventoryTable initialTab="helmets" />
-            </div>
+            <MainInventoryTable 
+              initialTab="helmets" 
+              title="ACCESSORIES & GEAR" 
+              subtitle="PUBLISHED INVENTORY MANAGER" 
+            />
           )}
           {activeTab === 'parts' && (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 p-5 rounded-2xl border border-slate-800">
-                <div>
-                  <h2 className="text-xl font-bold text-white tracking-wide">Spare Parts & Warehouse Bins</h2>
-                  <p className="text-xs text-slate-400 mt-1">OEM & racing components, brake systems, exhausts, and synthetic fluids</p>
-                </div>
-              </div>
-              <MainInventoryTable initialTab="parts" />
-            </div>
+            <MainInventoryTable 
+              initialTab="parts" 
+              title="OILS & LUBRICANTS" 
+              subtitle="PARTS & FLUIDS WAREHOUSE" 
+            />
           )}
           {activeTab === 'categories' && <CategoriesView />}
           {activeTab === 'settings' && <SettingsView />}

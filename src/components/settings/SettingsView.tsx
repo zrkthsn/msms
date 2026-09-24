@@ -21,20 +21,22 @@ export const SettingsView: React.FC = () => {
     e.preventDefault();
     addToast({
       type: 'success',
-      title: 'Settings Saved',
-      message: 'Dealership inventory parameters updated successfully.'
+      title: 'Preferences Saved',
+      message: 'Dealership inventory settings updated.'
     });
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl bg-white">
       {/* Header */}
-      <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+      <div className="bg-white p-5 rounded-xl border border-gray-200 flex items-center justify-between shadow-xs">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-wide">System & Dealership Settings</h2>
-          <p className="text-xs text-slate-400 mt-1">Configure multi-bay branches, threshold policies, and inventory engine</p>
+          <h2 className="font-showroom text-3xl font-black italic tracking-wide text-gray-900">
+            SYSTEM & DEALERSHIP SETTINGS
+          </h2>
+          <p className="text-xs text-gray-500 font-mono">Configure showroom locations, replenishment thresholds, and preferences</p>
         </div>
-        <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
+        <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
           <Settings className="w-5 h-5" />
         </div>
       </div>
@@ -42,33 +44,33 @@ export const SettingsView: React.FC = () => {
       {/* Settings Form */}
       <form onSubmit={handleSavePreferences} className="space-y-6">
         {/* Dealership Locations Management */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-          <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800">
-            <MapPin className="w-4 h-4 text-orange-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              Configured Dealership Locations & Bays
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+            <MapPin className="w-4 h-4 text-orange-600" />
+            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider font-mono">
+              Configured Showroom & Depot Branches
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {locations.map(loc => (
-              <div key={loc.id} className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 flex flex-col justify-between">
+              <div key={loc.id} className="p-3.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-orange-500/15 text-orange-400 border border-orange-500/30">
+                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700">
                       {loc.code}
                     </span>
                     {loc.isPrimary && (
-                      <span className="text-[9px] font-mono font-bold text-emerald-400">
+                      <span className="text-[9px] font-mono font-bold text-emerald-700">
                         PRIMARY HQ
                       </span>
                     )}
                   </div>
-                  <h4 className="text-xs font-semibold text-white mt-2">{loc.name}</h4>
-                  <p className="text-[11px] text-slate-400 mt-1">{loc.address}</p>
+                  <h4 className="text-xs font-bold text-gray-900 mt-2">{loc.name}</h4>
+                  <p className="text-[11px] text-gray-500 mt-0.5">{loc.address}</p>
                 </div>
-                <div className="text-[10px] font-mono text-slate-500 mt-3 pt-2 border-t border-slate-800/80">
-                  Phone: {loc.phone}
+                <div className="text-[10px] font-mono text-gray-400 mt-3 pt-2 border-t border-gray-200">
+                  Tel: {loc.phone}
                 </div>
               </div>
             ))}
@@ -76,17 +78,17 @@ export const SettingsView: React.FC = () => {
         </div>
 
         {/* Inventory Threshold & Alert Policies */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-          <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800">
-            <BellRing className="w-4 h-4 text-amber-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              Threshold & Alert Automation
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+            <BellRing className="w-4 h-4 text-orange-600" />
+            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider font-mono">
+              Alerts & Automation Rules
             </h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-mono text-slate-400 uppercase mb-1">
+              <label className="block text-[11px] font-mono text-gray-500 font-bold uppercase mb-1">
                 Default Safety Threshold (Units)
               </label>
               <input
@@ -95,74 +97,72 @@ export const SettingsView: React.FC = () => {
                 max="50"
                 value={defaultThreshold}
                 onChange={(e) => setDefaultThreshold(parseInt(e.target.value) || 1)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white font-mono focus:outline-none focus:border-orange-500"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 font-mono focus:outline-none focus:border-orange-500"
               />
-              <span className="text-[11px] text-slate-500 mt-1 block">
-                Automatic trigger when inventory quantity falls below this limit.
+              <span className="text-[11px] text-gray-400 mt-1 block">
+                Automatic trigger when inventory falls below this quantity.
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-slate-400 uppercase mb-1">
-                Operating Currency
+              <label className="block text-[11px] font-mono text-gray-500 font-bold uppercase mb-1">
+                Currency
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-orange-500"
               >
                 <option value="USD ($)">USD ($) - United States Dollar</option>
                 <option value="EUR (€)">EUR (€) - Euro</option>
                 <option value="GBP (£)">GBP (£) - British Pound</option>
-                <option value="CAD ($)">CAD ($) - Canadian Dollar</option>
-                <option value="AUD ($)">AUD ($) - Australian Dollar</option>
               </select>
             </div>
           </div>
 
           <div className="pt-2 space-y-2">
-            <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800 cursor-pointer">
+            <label className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200 cursor-pointer">
               <input
                 type="checkbox"
                 checked={autoReorderAlerts}
                 onChange={(e) => setAutoReorderAlerts(e.target.checked)}
-                className="w-4 h-4 rounded text-orange-500 focus:ring-0 bg-slate-900 border-slate-700"
+                className="w-4 h-4 rounded text-orange-600 focus:ring-0"
               />
               <div>
-                <div className="text-xs font-semibold text-slate-200">Real-time Stock Warning Popups</div>
-                <div className="text-[11px] text-slate-400">Trigger topbar alert badge when parts or helmets fall below reorder points</div>
+                <div className="text-xs font-bold text-gray-900">Real-time Stock Warning Badges</div>
+                <div className="text-[11px] text-gray-500">Highlight bell badge when parts reach reorder threshold</div>
               </div>
             </label>
 
-            <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800 cursor-pointer">
+            <label className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200 cursor-pointer">
               <input
                 type="checkbox"
                 checked={barcodeScannerActive}
                 onChange={(e) => setBarcodeScannerActive(e.target.checked)}
-                className="w-4 h-4 rounded text-orange-500 focus:ring-0 bg-slate-900 border-slate-700"
+                className="w-4 h-4 rounded text-orange-600 focus:ring-0"
               />
               <div>
-                <div className="text-xs font-semibold text-slate-200">Hardware Barcode & VIN Scanner Listening Mode</div>
-                <div className="text-[11px] text-slate-400">Allows USB / Bluetooth barcode scanners to quickly search and select parts</div>
+                <div className="text-xs font-bold text-gray-900">Barcode / VIN Scanner Listener Mode</div>
+                <div className="text-[11px] text-gray-500">Supports handheld Bluetooth and USB barcode input</div>
               </div>
             </label>
           </div>
         </div>
 
         {/* Database & Mock Data Controls */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-          <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800">
-            <Database className="w-4 h-4 text-purple-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              Data Persistence & Demonstration
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+            <Database className="w-4 h-4 text-orange-600" />
+            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider font-mono">
+              Database & Mock Data
             </h3>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-950/70 border border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
             <div>
-              <h4 className="text-xs font-semibold text-white">Reset Mock Inventory Data</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Restores the standard sample catalog of high-performance motorcycles, helmets, and spare parts.
+              <h4 className="text-xs font-bold text-gray-900">Reset Demo Showroom Catalog</h4>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Restores original sample dataset of Kawasaki, SYM, BMW, and Yamaha bikes.
               </p>
             </div>
             <button
@@ -172,10 +172,10 @@ export const SettingsView: React.FC = () => {
                   resetDemoData();
                 }
               }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition-colors shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white hover:bg-gray-100 text-gray-700 text-xs font-bold uppercase border border-gray-300 transition-colors shadow-xs shrink-0"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-orange-400" />
-              <span>Reset Sample Data</span>
+              <RotateCcw className="w-3.5 h-3.5 text-orange-600" />
+              <span>Reset Data</span>
             </button>
           </div>
         </div>
@@ -184,7 +184,7 @@ export const SettingsView: React.FC = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-orange-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center gap-2 px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs uppercase shadow-sm transition-all"
           >
             <Save className="w-4 h-4" />
             <span>Save Preferences</span>

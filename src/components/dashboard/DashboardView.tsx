@@ -5,14 +5,10 @@ import { RecentActivityTable } from './RecentActivityTable';
 import { StockDistributionChart } from './StockDistributionChart';
 import { LowStockBanner } from './LowStockBanner';
 import { MainInventoryTable } from '../inventory/MainInventoryTable';
-import { useInventory } from '../../context/InventoryContext';
-import { ArrowRight, Layers } from 'lucide-react';
 
 export const DashboardView: React.FC = () => {
-  const { setActiveTab } = useInventory();
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white">
       {/* Low stock alert ribbon */}
       <LowStockBanner />
 
@@ -34,23 +30,11 @@ export const DashboardView: React.FC = () => {
 
       {/* Main Stock Registry Snapshot */}
       <div className="space-y-3 pt-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-orange-400" />
-            <h3 className="text-base font-bold text-white tracking-wide">
-              Live Stock Registry & Fleet Management
-            </h3>
-          </div>
-          <button
-            onClick={() => setActiveTab('motorcycles')}
-            className="flex items-center gap-1.5 text-xs text-orange-400 hover:text-orange-300 font-semibold"
-          >
-            <span>Showroom Fleet View</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <MainInventoryTable initialTab="all" />
+        <MainInventoryTable 
+          initialTab="motorcycles" 
+          title="WEB SHOWROOM" 
+          subtitle="PUBLISHED INVENTORY MANAGER"
+        />
       </div>
     </div>
   );

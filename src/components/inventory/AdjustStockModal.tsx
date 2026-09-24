@@ -46,84 +46,86 @@ export const AdjustStockModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="relative w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
+        <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-white">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-lg bg-orange-50 text-orange-600 border border-orange-200">
               <PackageCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Adjust Stock Level</h3>
-              <p className="text-xs text-slate-400 font-mono">{code}</p>
+              <h3 className="font-showroom text-xl font-black italic tracking-wide text-gray-900">
+                ADJUST STOCK LEVEL
+              </h3>
+              <p className="text-[11px] text-gray-500 font-mono font-bold">{code}</p>
             </div>
           </div>
           <button
             onClick={() => setAdjustStockItem(null)}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-1.5 text-gray-400 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4 bg-white">
+          <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
             <div>
-              <div className="text-xs text-slate-400">Target Item</div>
-              <div className="text-sm font-semibold text-slate-100">{title}</div>
+              <div className="text-[10px] uppercase font-mono text-gray-400 font-bold">Target Product</div>
+              <div className="text-xs font-bold text-gray-900">{title}</div>
             </div>
             <div className="text-right">
-              <div className="text-xs text-slate-400">Current Qty</div>
-              <div className="font-mono text-base font-bold text-orange-400">{currentStock}</div>
+              <div className="text-[10px] uppercase font-mono text-gray-400 font-bold">Current Stock</div>
+              <div className="font-mono text-base font-bold text-orange-600">{currentStock}</div>
             </div>
           </div>
 
           {/* Direction toggle */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
-              Adjustment Action
+            <label className="block text-[11px] font-mono text-gray-500 uppercase tracking-wider font-bold mb-1.5">
+              Action
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setDirection('add')}
-                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-bold uppercase transition-all ${
                   direction === 'add'
-                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                    : 'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-slate-200'
+                    ? 'bg-orange-600 border-orange-600 text-white shadow-xs'
+                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                <Plus className="w-4 h-4" />
-                <span>Receive / Add Stock</span>
+                <Plus className="w-3.5 h-3.5" />
+                <span>Receive / Add</span>
               </button>
               <button
                 type="button"
                 onClick={() => setDirection('remove')}
-                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-bold uppercase transition-all ${
                   direction === 'remove'
-                    ? 'bg-rose-500/15 border-rose-500/40 text-rose-300'
-                    : 'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-slate-200'
+                    ? 'bg-black border-black text-white shadow-xs'
+                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                <Minus className="w-4 h-4" />
-                <span>Issue / Remove Stock</span>
+                <Minus className="w-3.5 h-3.5" />
+                <span>Issue / Remove</span>
               </button>
             </div>
           </div>
 
           {/* Quantity Selector */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-mono text-gray-500 uppercase tracking-wider font-bold mb-1.5">
               Quantity to {direction === 'add' ? 'Add' : 'Deduct'}
             </label>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center border border-slate-800 bg-slate-950 rounded-xl overflow-hidden flex-1">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center border border-gray-200 bg-gray-50 rounded-lg overflow-hidden flex-1">
                 <button
                   type="button"
                   onClick={() => setChangeAmount(prev => Math.max(1, prev - 1))}
-                  className="p-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
@@ -132,25 +134,25 @@ export const AdjustStockModal: React.FC = () => {
                   min="1"
                   value={changeAmount}
                   onChange={(e) => setChangeAmount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full text-center bg-transparent text-white font-mono font-bold text-base focus:outline-none"
+                  className="w-full text-center bg-transparent text-gray-900 font-mono font-bold text-sm focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setChangeAmount(prev => prev + 1)}
-                  className="p-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Quick increment pill presets */}
-              <div className="flex gap-1.5">
+              {/* Quick increment presets */}
+              <div className="flex gap-1">
                 {[5, 10, 20].map((num) => (
                   <button
                     key={num}
                     type="button"
                     onClick={() => setChangeAmount(num)}
-                    className="px-2.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-300 border border-slate-700"
+                    className="px-2.5 py-2 rounded-lg bg-white hover:bg-gray-50 text-xs font-mono font-bold text-gray-700 border border-gray-300"
                   >
                     +{num}
                   </button>
@@ -161,59 +163,58 @@ export const AdjustStockModal: React.FC = () => {
 
           {/* Reason Selector */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-mono text-gray-500 uppercase tracking-wider font-bold mb-1.5">
               Adjustment Reason
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-orange-500/50"
+              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-orange-500"
             >
               <option value="Stock Receipt from Supplier">Stock Receipt from Supplier</option>
               <option value="Customer Sale Fulfilled">Customer Sale Fulfilled</option>
               <option value="Physical Count Cycle Audit">Physical Count Cycle Audit</option>
               <option value="Damaged / Scrapped in Bay">Damaged / Scrapped in Bay</option>
-              <option value="Inter-Branch Transfer">Inter-Branch Transfer</option>
               <option value="Customer Return">Customer Return</option>
             </select>
           </div>
 
-          {/* Notes */}
+          {/* Internal Notes */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-mono text-gray-500 uppercase tracking-wider font-bold mb-1.5">
               Internal Notes (Optional)
             </label>
             <input
               type="text"
-              placeholder="e.g., PO #88910 verified by technician"
+              placeholder="e.g. Packing slip verified by technician"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-orange-500/50"
+              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500"
             />
           </div>
 
           {/* Summary Preview */}
-          <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 flex items-center justify-between text-xs">
-            <span className="text-slate-400">New Projected Stock:</span>
+          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between text-xs">
+            <span className="text-gray-500 font-mono">Projected New Stock:</span>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-slate-500 line-through">{currentStock}</span>
-              <span className="text-slate-400 font-mono">→</span>
-              <span className="font-mono font-bold text-orange-400 text-sm">{newStock} units</span>
+              <span className="font-mono text-gray-400 line-through">{currentStock}</span>
+              <span className="text-gray-400 font-mono">→</span>
+              <span className="font-mono font-bold text-orange-600 text-sm">{newStock} units</span>
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="pt-2 flex items-center justify-end gap-3">
+          <div className="pt-2 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={() => setAdjustStockItem(null)}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
+              className="px-4 py-2 rounded-lg bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 text-xs font-bold uppercase"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-slate-950 font-bold text-xs shadow-md shadow-orange-600/30 transition-all"
+              className="px-5 py-2 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase shadow-sm transition-all"
             >
               Confirm Adjustment
             </button>
