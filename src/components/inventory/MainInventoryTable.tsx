@@ -484,14 +484,10 @@ export const MainInventoryTable: React.FC<MainInventoryTableProps> = ({
                         {/* Item & Specs */}
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden text-gray-400 group-hover:border-orange-500 transition-colors">
-                              {isMoto && (item.imageUrl ? (
-                                <img src={item.imageUrl} alt="" className="w-full h-full object-contain" />
-                              ) : (
-                                <Bike className="w-5 h-5 text-orange-600" />
-                              ))}
-                              {isGear && <HardHat className="w-5 h-5 text-sky-600" />}
-                              {isPart && <Wrench className="w-5 h-5 text-emerald-600" />}
+                            <div className="w-9 h-9 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 text-gray-400 group-hover:border-orange-500 transition-colors">
+                              {isMoto && <Bike className="w-4 h-4 text-orange-600" />}
+                              {isGear && <HardHat className="w-4 h-4 text-gray-700" />}
+                              {isPart && <Wrench className="w-4 h-4 text-gray-700" />}
                             </div>
 
                             <div>

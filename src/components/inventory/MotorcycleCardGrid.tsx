@@ -26,7 +26,7 @@ export const MotorcycleCardGrid: React.FC<MotorcycleCardGridProps> = ({ items })
       {items.map((moto, idx) => {
         const isMenuOpen = activeMenuId === moto.id;
         
-        // Calculate or mock realistic days-in-stock badge (e.g. 10D, 20D, 48D, 64D, 87D)
+        // Days in stock tag (e.g. 10D, 20D, 48D, 64D, 87D)
         const daysInStock = ((idx * 17 + 10) % 90) + 5;
         const isLongStock = daysInStock > 40;
 
@@ -36,27 +36,20 @@ export const MotorcycleCardGrid: React.FC<MotorcycleCardGridProps> = ({ items })
             onClick={() => setInspectItem(moto)}
             className="group relative bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md rounded-xl p-3 flex flex-col justify-between transition-all duration-200 cursor-pointer"
           >
-            {/* Image Container with clean white backdrop */}
-            <div className="relative h-44 w-full bg-white flex items-center justify-center p-2 overflow-hidden">
-              {moto.imageUrl ? (
-                <img
-                  src={moto.imageUrl}
-                  alt={`${moto.brand} ${moto.model}`}
-                  className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-300">
-                  <Bike className="w-14 h-14" />
-                </div>
-              )}
+            {/* Clean Placeholder Box (No photos loaded) */}
+            <div className="relative h-36 w-full bg-gray-50/80 border border-gray-100 rounded-lg flex flex-col items-center justify-center p-3 overflow-hidden group-hover:border-orange-200 group-hover:bg-orange-50/20 transition-all">
+              <Bike className="w-10 h-10 text-gray-300 group-hover:text-orange-500 transition-colors stroke-[1.25]" />
+              <span className="text-[9px] font-mono font-bold text-gray-400 mt-1.5 uppercase tracking-widest group-hover:text-orange-600 transition-colors">
+                {moto.category}
+              </span>
 
               {/* Status Pill if Sold or Reserved */}
               {moto.status !== 'In Stock' && (
-                <div className="absolute top-1 left-1">
+                <div className="absolute top-1.5 left-1.5">
                   <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
                     moto.status === 'Reserved' 
                       ? 'bg-amber-100 text-amber-800 border border-amber-300' 
-                      : 'bg-gray-100 text-gray-700 border border-gray-300'
+                      : 'bg-gray-200 text-gray-700 border border-gray-300'
                   }`}>
                     {moto.status}
                   </span>
@@ -64,13 +57,13 @@ export const MotorcycleCardGrid: React.FC<MotorcycleCardGridProps> = ({ items })
               )}
 
               {/* Quick 3-dots Menu Button */}
-              <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setActiveMenuId(isMenuOpen ? null : moto.id);
                   }}
-                  className="p-1 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+                  className="p-1 rounded-md text-gray-400 hover:text-gray-700 hover:bg-white border border-transparent hover:border-gray-200 shadow-xs"
                 >
                   <MoreVertical className="w-3.5 h-3.5" />
                 </button>
@@ -118,7 +111,7 @@ export const MotorcycleCardGrid: React.FC<MotorcycleCardGridProps> = ({ items })
             </div>
 
             {/* Information Block matching user screenshot */}
-            <div className="pt-2 border-t border-gray-100">
+            <div className="pt-3">
               {/* Brand in italic uppercase */}
               <div className="text-[10px] font-bold italic uppercase tracking-wider text-gray-400 font-mono">
                 {moto.brand}
@@ -130,7 +123,7 @@ export const MotorcycleCardGrid: React.FC<MotorcycleCardGridProps> = ({ items })
               </div>
 
               {/* Year & Days-in-stock tag */}
-              <div className="mt-2 flex items-center justify-between">
+              <div className="mt-2.5 flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-900 font-mono">
                   {moto.year}
                 </span>

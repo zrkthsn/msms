@@ -42,8 +42,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Naked',
-    createdAt: '2024-03-14T10:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-03-14T10:00:00Z'
   },
   {
     id: 'moto-kw-z900se',
@@ -61,8 +60,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Naked',
-    createdAt: '2024-03-10T14:15:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-03-10T14:15:00Z'
   },
   {
     id: 'moto-kw-ninja500',
@@ -80,8 +78,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Sport',
-    createdAt: '2024-03-08T11:20:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-03-08T11:20:00Z'
   },
   {
     id: 'moto-kw-kle500',
@@ -99,8 +96,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash North Service & Warehouse',
     category: 'Adventure',
-    createdAt: '2024-02-28T09:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-02-28T09:00:00Z'
   },
   {
     id: 'moto-sym-jetx',
@@ -118,8 +114,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Naked',
-    createdAt: '2024-02-05T16:45:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-02-05T16:45:00Z'
   },
   {
     id: 'moto-sym-cruisym',
@@ -137,8 +132,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Touring',
-    createdAt: '2024-01-20T13:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1571188654248-7a89213915f7?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-20T13:00:00Z'
   },
   {
     id: 'moto-sym-adxtg',
@@ -156,8 +150,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash West Coast Outlet',
     category: 'Adventure',
-    createdAt: '2024-01-15T15:10:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-15T15:10:00Z'
   },
   {
     id: 'moto-sym-shex',
@@ -175,8 +168,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Naked',
-    createdAt: '2024-01-11T12:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981420-87aa9dad1c89?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-11T12:00:00Z'
   },
   {
     id: 'moto-bmw-s1000r',
@@ -194,8 +186,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash North Service & Warehouse',
     category: 'Sport',
-    createdAt: '2024-01-05T09:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-05T09:00:00Z'
   },
   {
     id: 'moto-yam-jog',
@@ -213,8 +204,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Naked',
-    createdAt: '2024-01-02T14:15:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558980394-4c7c9299fe96?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-02T14:15:00Z'
   },
   {
     id: 'moto-ducati-v4s',
@@ -232,8 +222,7 @@ export const INITIAL_MOTORCYCLES: MotorcycleItem[] = [
     status: 'In Stock',
     location: 'Mantash Flagship Hub (Downtown)',
     category: 'Sport',
-    createdAt: '2024-03-15T10:30:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-03-15T10:30:00Z'
   }
 ];
 
@@ -246,15 +235,14 @@ export const INITIAL_HELMETS_GEAR: HelmetGearItem[] = [
     model: 'X-Fifteen Marquez Motegi 4',
     size: 'M',
     safetyCert: 'FIM & ECE',
-    quantityInStock: 2, // Low stock alert! (threshold is 3)
+    quantityInStock: 2,
     minAlertThreshold: 3,
     costPrice: 620,
     price: 999.99,
     color: 'Red/White/Gold',
     gearType: 'Full Face Helmet',
     location: 'Mantash Flagship Hub (Downtown)',
-    createdAt: '2024-02-10T11:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-02-10T11:00:00Z'
   },
   {
     id: 'gear-2',
@@ -271,8 +259,7 @@ export const INITIAL_HELMETS_GEAR: HelmetGearItem[] = [
     color: 'Matte Raw Carbon',
     gearType: 'Full Face Helmet',
     location: 'Mantash Flagship Hub (Downtown)',
-    createdAt: '2024-01-18T10:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558980394-4c7c9299fe96?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-18T10:00:00Z'
   },
   {
     id: 'gear-3',
@@ -282,15 +269,14 @@ export const INITIAL_HELMETS_GEAR: HelmetGearItem[] = [
     model: 'Pista GP RR Anno 75 Carbon',
     size: 'XL',
     safetyCert: 'FIM & ECE',
-    quantityInStock: 1, // Critical low stock
+    quantityInStock: 1,
     minAlertThreshold: 2,
     costPrice: 1150,
     price: 1749.95,
     color: 'Gloss Carbon / Metallic Orange',
     gearType: 'Full Face Helmet',
     location: 'Mantash Flagship Hub (Downtown)',
-    createdAt: '2024-03-02T13:20:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981420-87aa9dad1c89?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-03-02T13:20:00Z'
   },
   {
     id: 'gear-4',
@@ -307,8 +293,7 @@ export const INITIAL_HELMETS_GEAR: HelmetGearItem[] = [
     color: 'Black / Flo Orange',
     gearType: 'Riding Jacket',
     location: 'Mantash Flagship Hub (Downtown)',
-    createdAt: '2024-02-14T09:40:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-02-14T09:40:00Z'
   },
   {
     id: 'gear-5',
@@ -318,15 +303,14 @@ export const INITIAL_HELMETS_GEAR: HelmetGearItem[] = [
     model: 'Misano 3 D-Air 1-Piece Pro Suit',
     size: 'S',
     safetyCert: 'ECE',
-    quantityInStock: 0, // Out of stock!
+    quantityInStock: 0,
     minAlertThreshold: 2,
     costPrice: 1850,
     price: 2999.00,
     color: 'Black / Fluo Red',
     gearType: 'Racing Suit',
     location: 'Mantash Flagship Hub (Downtown)',
-    createdAt: '2024-01-25T14:00:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-01-25T14:00:00Z'
   },
   {
     id: 'gear-6',
@@ -343,8 +327,7 @@ export const INITIAL_HELMETS_GEAR: HelmetGearItem[] = [
     color: 'Gloss Lux Black',
     gearType: 'Full Face Helmet',
     location: 'Mantash West Coast Outlet',
-    createdAt: '2024-02-20T17:15:00Z',
-    imageUrl: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?auto=format&fit=crop&w=600&q=80'
+    createdAt: '2024-02-20T17:15:00Z'
   }
 ];
 
@@ -358,7 +341,7 @@ export const INITIAL_SPARE_PARTS: SparePartItem[] = [
     compatibleModels: 'BMW S1000RR (2020-2024)',
     category: 'Exhaust',
     shelfBinLocation: 'Bay 4 - Row B - Bin 12',
-    stockCount: 3, // Low stock (reorder is 4)
+    stockCount: 3,
     reorderPoint: 4,
     unitCost: 1950.00,
     unitPrice: 2890.00,
@@ -374,7 +357,7 @@ export const INITIAL_SPARE_PARTS: SparePartItem[] = [
     compatibleModels: 'Ducati Panigale V4, Aprilia RSV4, Yamaha R1',
     category: 'Brakes',
     shelfBinLocation: 'Bay 2 - Row A - Bin 05',
-    stockCount: 1, // Critical low stock
+    stockCount: 1,
     reorderPoint: 3,
     unitCost: 2100.00,
     unitPrice: 2995.00,
@@ -454,7 +437,7 @@ export const INITIAL_SPARE_PARTS: SparePartItem[] = [
     compatibleModels: 'Brembo M50 / Stylema Caliper Systems',
     category: 'Brakes',
     shelfBinLocation: 'Bay 2 - Row B - Bin 02',
-    stockCount: 0, // Out of stock!
+    stockCount: 0,
     reorderPoint: 6,
     unitCost: 55.00,
     unitPrice: 94.50,
